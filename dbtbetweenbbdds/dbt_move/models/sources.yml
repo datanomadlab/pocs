@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: raw_source
+    database: raw
+    schema: public
+    loader: postgres
+    tables:
+      - name: not_clean
+        identifier: not_clean
