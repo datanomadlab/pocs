@@ -1,0 +1,5 @@
+pyspark
+psycopg2-binary
+mysql-connector-python
+pandas
+faker
