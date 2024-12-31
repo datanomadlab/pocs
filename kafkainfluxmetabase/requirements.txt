@@ -1,0 +1,4 @@
+kafka-python>=2.0.2
+influxdb
+six>=1.16.0
+influxdb-client
