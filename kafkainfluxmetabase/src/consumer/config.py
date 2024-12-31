@@ -1,0 +1,6 @@
+KAFKA_BROKER = 'localhost:9092'
+TOPIC = 'pos-events'
+INFLUXDB_URL = 'http://localhost:8086'
+INFLUXDB_BUCKET = 'pos_metrics'
+INFLUXDB_TOKEN = '1TNFQ39e4aPYmuY5ycW29AHV1iQ5HG9vT9FB0Vd98qMk_BwUXgHwUCeJauXfJ8RHiq7327a0no9QNYakkRbVoQ=='
+INFLUXDB_ORG = 'datanomadlab'
