@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  metabase:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./plugins:/plugins       # Controlador JDBC
+      - ./data:/data             # Base de datos DuckDB
+    environment:
+      MB_PLUGINS_DIR: /plugins
+    depends_on:
+      - duckdb-init
+
+  duckdb-init:
+    image: python:3.9-slim
+    container_name: duckdb_init
+    volumes:
+      - duckdb-data:/data
+      - ./init:/init
+    working_dir: /init
+    entrypoint: ["sh", "-c", "pip install duckdb pandas && python setup_duckdb.py"]
+
+volumes:
+  duckdb-data:
