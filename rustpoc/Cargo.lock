@@ -855,6 +855,7 @@ version = "0.1.0"
 dependencies = [
  "polars",
  "rusqlite",
+ "sysinfo",
 ]
 
 [[package]]
@@ -1151,6 +1152,8 @@ dependencies = [
  "dashmap",
  "rayon",
  "rusqlite",
+ "serde",
+ "sysinfo",
 ]
 
 [[package]]
@@ -1395,6 +1398,7 @@ dependencies = [
  "libc",
  "ntapi",
  "once_cell",
+ "rayon",
  "windows",
 ]
 

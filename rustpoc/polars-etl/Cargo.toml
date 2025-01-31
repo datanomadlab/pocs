@@ -4,12 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-polars = { version = "0.37", features = [
+polars = { version = "0.37.0", features = [
     "lazy",
     "csv",
     "strings",
     "regex",
     "sql",
-    "dtype-decimal"
+    "dtype-decimal",
+    "streaming"
 ] }
 rusqlite = "0.30"
+sysinfo = "0.30.13"

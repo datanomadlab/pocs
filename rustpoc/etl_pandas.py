@@ -2,9 +2,11 @@ import csv
 import sqlite3
 import time
 import pandas as pd
+import psutil
 
 def main():
-    start_time = time.time()
+    start = time.time()
+    process = psutil.Process()
     
     # Extract
     df = pd.read_csv("empleados.csv")
@@ -25,7 +27,8 @@ def main():
     promedio_deptos.to_sql('salarios_promedio', conn, if_exists='replace', index=False)
     conn.close()
     
-    print(f"Tiempo Python: {time.time() - start_time:.2f} segundos")
+    mem_usage = process.memory_info().rss // 1_000_000  # Bytes a MB
+    print(f"Tiempo: {time.time() - start:.2f}s Memoria: {process.memory_info().rss // 1024 // 1024}MB")
 
 if __name__ == "__main__":
     main()

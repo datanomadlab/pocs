@@ -1,21 +1,33 @@
 #!/bin/bash
 
-# Generar datos
-python3 generate_data.py
+# Configurar directorio base
+BASE_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+cd "$BASE_DIR"  # Cambiar al directorio raíz donde está el CSV
 
-# Ejecutar implementaciones
-(cd polars-etl && cargo run --release)
-(cd rayon-etl && cargo run --release)
+echo "=== BENCHMARK DE PERFORMANCE ==="
 
-# Python
-python3 etl_pandas.py
+# Compilar proyectos
+echo "Compilando..."
+cargo build --release
 
-# Mostrar resultados
-echo -e "\nResultados Finales:"
-echo "-------------------"
-printf "%-15s | %-10s | %-10s\n" "Sistema" "Tiempo" "Memoria"
-printf "%-15s | %-10s | %-10s\n" "Rust (Rayon)" "6.8s" "130MB"
-printf "%-15s | %-10s | %-10s\n" "Rust (Polars)" "3.2s" "90MB"
-printf "%-15s | %-10s | %-10s\n" "Python (pandas)" "12.5s" "510MB"
+run_benchmark() {
+    local name=$1
+    local cmd=$2
+    echo -e "\nEjecutando $name..."
+    
+    cd "$BASE_DIR"  # Asegurar que estamos en el directorio correcto para cada ejecución
+    start_time=$(date +%s)
+    $cmd
+    end_time=$(date +%s)
+    
+    elapsed=$((end_time - start_time))
+    echo "Tiempo: ${elapsed}s"
+}
 
+# Ejecutar benchmarks
+run_benchmark "Generate Data" "python3 generate_data.py"
+run_benchmark "Rust Polars" "./target/release/polars-etl"
+run_benchmark "Rust Rayon" "./target/release/rayon-etl"
+run_benchmark "Python Pandas" "python3 etl_pandas.py"
 
+echo -e "\n=== RESULTADOS FINALES ==="
