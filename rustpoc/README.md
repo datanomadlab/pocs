@@ -30,11 +30,11 @@ Proof of Concept que compara la implementación de un flujo ETL básico en Rust 
 
 ## Resultados Comparativos (1M de registros)
 
-| Sistema          | Tiempo (s) | Memoria (MB) | CSV Size (KB) | SQLite Size (KB) |
-|------------------|------------|--------------|---------------|------------------|
-| **Rust (Polars)** | 2.1        | 92           | 1.8           | 12               |
-| **Rust (Rayon)**  | 3.8        | 145          | 1.8           | 12               |
-| Python (pandas)  | 12.5       | 510          | 1.8           | 12               |
+| Sistema          | Tiempo (s) | Memoria (MB) | 
+|------------------|------------|--------------|
+| **Rust (Polars)** | 0.22       | 1069.84     |
+| **Rust (Rayon)**  | 1.37       | 572.27      |
+| Python (pandas)   | 5          | 1942        | 
 
 **Notas:**
 - Datos recolectados en Macbook Pro M4

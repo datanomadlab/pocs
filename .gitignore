@@ -174,3 +174,5 @@ cython_debug/
 .dbt/
 
 .lab/
+rustpoc/empleados.csv
+rustpoc/empleados.csv
