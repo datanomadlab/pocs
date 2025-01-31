@@ -1,0 +1,15 @@
+[package]
+name = "polars-etl"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+polars = { version = "0.37", features = [
+    "lazy",
+    "csv",
+    "strings",
+    "regex",
+    "sql",
+    "dtype-decimal"
+] }
+rusqlite = "0.30"
