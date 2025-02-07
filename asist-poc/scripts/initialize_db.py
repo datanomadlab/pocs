@@ -18,7 +18,6 @@ def initialize_database():
         )
     """)
     
-    # Carga de CSV con nombres originales
     con.execute(f"""
         INSERT INTO sales 
         SELECT 
