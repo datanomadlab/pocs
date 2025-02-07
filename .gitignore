@@ -176,3 +176,5 @@ cython_debug/
 .lab/
 rustpoc/empleados.csv
 rustpoc/empleados.csv
+
+.modelos/
