@@ -175,4 +175,9 @@ cython_debug/
 
 .lab/
 rustpoc/empleados.csv
-rustpoc/empleados.csv
+
+# Modelos locales (agregado para asist/poc)
+/asist/poc/modelo/
+
+.modelos/
+modelos/
