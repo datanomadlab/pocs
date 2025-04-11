@@ -1,0 +1,43 @@
+
+Título: Guía de despliegue de microservicios
+
+1. Introducción
+Esta guía detalla las buenas prácticas para desplegar microservicios de manera escalable, segura y mantenible. Está dirigida a equipos DevOps y desarrolladores backend.
+
+2. Estructura del repositorio
+Cada microservicio debe tener su propio repositorio, contener un Dockerfile, archivos de configuración Helm y pruebas unitarias.
+
+3. Construcción de imágenes Docker
+- Utilizar imágenes base ligeras como Alpine.
+- Minimizar las capas para mejorar tiempos de build y seguridad.
+- Incluir etiquetas con versiones específicas y hashes de commit.
+
+4. Orquestación con Kubernetes
+- Utilizar Helm Charts para facilitar despliegues y actualizaciones.
+- Definir recursos por servicio (CPU/Memory limits).
+- Usar liveness y readiness probes para asegurar salud del servicio.
+
+5. Observabilidad
+- Todos los servicios deben exponer métricas en formato Prometheus en /metrics (puerto 9100).
+- Los logs deben estar estructurados en JSON y ser enviados a Loki mediante Fluent Bit.
+- Dashboards en Grafana deben incluir alertas por umbral de latencia, errores y disponibilidad.
+
+6. Seguridad
+- Autenticación entre servicios mediante JWT firmados.
+- Las claves deben rotarse cada 24 horas automáticamente.
+- Validar inputs y sanitizar salidas para prevenir inyecciones.
+
+7. CI/CD
+- Integrar pipelines que incluyan linting, pruebas unitarias, pruebas de integración y validación de seguridad.
+- Despliegues automatizados a staging y control manual en producción.
+- Generar changelogs automáticos y firmar los contenedores con cosign.
+
+8. Backup y recuperación
+- Hacer snapshots de los volúmenes persistentes cada 12 horas.
+- Verificar integridad de los backups mediante checksum.
+- Probar restauraciones cada 15 días en un entorno aislado.
+
+9. Consideraciones finales
+- Documentar cada servicio con Swagger/OpenAPI.
+- Automatizar el escalamiento horizontal según uso de CPU/memoria.
+- Monitorizar constantemente los tiempos de respuesta para detectar regresiones de rendimiento.

@@ -1,0 +1,32 @@
+
+Preguntas Frecuentes - Servicio Técnico
+
+1. ¿Cómo restablezco mi contraseña?
+Para restablecer la contraseña, accede a la pantalla de login y haz clic en “¿Olvidaste tu contraseña?”. Ingresa tu correo registrado y recibirás un enlace para definir una nueva contraseña. Este enlace es válido por 15 minutos por seguridad.
+
+2. ¿Dónde se almacenan mis datos?
+Tus datos están alojados en servidores cifrados ubicados en centros de datos con certificación ISO 27001. Todo el tráfico es encriptado usando TLS 1.3 y los datos sensibles son cifrados en reposo con AES-256.
+
+3. ¿Cómo elimino mi cuenta?
+Para eliminar tu cuenta, dirígete a Configuración > Privacidad > Eliminar cuenta. Este proceso es irreversible. Recibirás una notificación de confirmación y tus datos serán eliminados completamente en un plazo de 30 días.
+
+4. ¿Qué pasa si pierdo acceso al correo registrado?
+En caso de perder el acceso a tu correo, deberás verificar tu identidad a través de nuestro centro de soporte. Se solicitarán datos asociados a la cuenta y posiblemente una videollamada de validación.
+
+5. ¿Puedo exportar mis datos?
+Sí. Desde el panel de usuario puedes descargar todos tus datos en formato JSON o CSV. También puedes solicitar un backup completo vía soporte, que será entregado en un plazo de 48 horas hábiles.
+
+6. ¿Cuáles son los horarios de soporte?
+Nuestro soporte técnico está disponible 24/7, incluyendo feriados. En horarios de alta demanda, el tiempo de espera promedio puede ser de hasta 10 minutos.
+
+7. ¿Qué navegadores y dispositivos son compatibles?
+La plataforma está optimizada para los navegadores Chrome, Firefox y Safari en sus últimas versiones. También es completamente funcional desde dispositivos móviles (iOS y Android).
+
+8. ¿Qué medidas de seguridad existen ante accesos no autorizados?
+Implementamos autenticación multifactor (MFA), alertas por actividad sospechosa, bloqueos automáticos tras múltiples intentos fallidos y validación por IP en accesos críticos.
+
+9. ¿Puedo usar la plataforma desde el extranjero?
+Sí, puedes usar la plataforma desde cualquier país. Sin embargo, ciertas funciones pueden verse limitadas por regulaciones locales o restricciones de red.
+
+10. ¿Dónde puedo ver el historial de mis tickets de soporte?
+Puedes ver el historial completo ingresando a tu perfil > sección Soporte > Historial de tickets. Allí verás el estado, responsable asignado y los tiempos de respuesta de cada caso.

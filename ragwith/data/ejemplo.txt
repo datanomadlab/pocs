@@ -1,0 +1,21 @@
+Inteligencia Artificial y Aprendizaje Automático
+
+La Inteligencia Artificial (IA) es un campo de la informática que se centra en la creación de sistemas capaces de realizar tareas que normalmente requieren inteligencia humana. El Aprendizaje Automático (ML) es un subcampo de la IA que se centra en el desarrollo de algoritmos que permiten a las computadoras aprender y mejorar a partir de la experiencia.
+
+Tipos de Aprendizaje Automático:
+
+1. Aprendizaje Supervisado: El modelo aprende a partir de datos etiquetados, donde cada ejemplo de entrenamiento tiene una respuesta correcta conocida.
+
+2. Aprendizaje No Supervisado: El modelo encuentra patrones en datos no etiquetados sin ninguna guía externa.
+
+3. Aprendizaje por Refuerzo: El modelo aprende a través de la interacción con un entorno, recibiendo recompensas o castigos por sus acciones.
+
+Aplicaciones de la IA:
+
+- Procesamiento de Lenguaje Natural (NLP)
+- Visión por Computadora
+- Sistemas de Recomendación
+- Vehículos Autónomos
+- Diagnóstico Médico
+
+El futuro de la IA promete avances significativos en diversos campos, pero también plantea importantes consideraciones éticas y sociales que deben ser abordadas cuidadosamente. 
