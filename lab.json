@@ -1,0 +1,50 @@
+{
+  "experimentos": [
+    {
+      "numero": "01",
+      "titulo": "Lakehouse de bolsillo",
+      "pregunta": "¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket?",
+      "stack": ["iceberg", "duckdb", "bigquery"],
+      "estado": "en-construccion",
+      "en": {
+        "titulo": "Pocket lakehouse",
+        "pregunta": "How much do you save by moving analytics off BigQuery to Iceberg and DuckDB on a bucket?"
+      }
+    },
+    {
+      "numero": "02",
+      "titulo": "Agente de datos con MCP",
+      "pregunta": "¿Puede un agente responder preguntas de negocio sobre un warehouse sin inventar cifras?",
+      "stack": ["mcp", "duckdb", "llm"],
+      "estado": "proxima",
+      "en": {
+        "titulo": "A data agent with MCP",
+        "pregunta": "Can an agent answer business questions over a warehouse without making up numbers?"
+      }
+    },
+    {
+      "numero": "03",
+      "titulo": "Pipeline de USD 5 al mes",
+      "pregunta": "¿Cuál es el ELT mínimo y serio para una pyme, sin herramientas de pago?",
+      "stack": ["dlt", "duckdb", "cloud run"],
+      "estado": "proxima",
+      "en": {
+        "titulo": "A USD 5 a month pipeline",
+        "pregunta": "What is the smallest serious ELT for a small company, without paid tools?"
+      }
+    },
+    {
+      "numero": "11",
+      "titulo": "Un catálogo para todos",
+      "pregunta": "¿Pueden Spark, Trino y DuckDB usar la misma tabla Iceberg, con permisos y sin depender de un proveedor?",
+      "stack": ["polaris", "seatunnel", "iceberg"],
+      "estado": "proxima",
+      "etiqueta": "Serie Lakehouse abierto",
+      "en": {
+        "titulo": "One catalog for everyone",
+        "pregunta": "Can Spark, Trino and DuckDB share the same Iceberg table, with permissions and no vendor lock-in?",
+        "etiqueta": "Open lakehouse series"
+      }
+    }
+  ]
+}
