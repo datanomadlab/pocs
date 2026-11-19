@@ -1,0 +1,54 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/parquet.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Parquet"
+pregunta = "Guarda las tablas por columnas y comprimidas, para leer solo lo que la consulta necesita."
+nota = "Los mismos 500.000 viajes de taxi, guardados de dos formas. Medido con DuckDB el 17 de noviembre de 2026."
+
+conectores = [
+  "M372 490H436V360H500",
+  "M436 490V620H500",
+  "M830 360H960",
+  "M830 620H960",
+]
+
+[[caja]]
+titulo = "la misma tabla"
+detalle = "500.000 viajes de taxi"
+x = 72
+y = 430
+w = 300
+h = 120
+
+[[caja]]
+titulo = "csv"
+detalle = "fila por fila, 48 MB"
+x = 500
+y = 300
+w = 330
+h = 120
+
+[[caja]]
+titulo = "parquet"
+detalle = "columna por columna, 12 MB"
+x = 500
+y = 560
+w = 330
+h = 120
+
+[[caja]]
+titulo = "118 ms"
+detalle = "lee el archivo completo"
+x = 960
+y = 300
+w = 400
+h = 120
+
+[[caja]]
+titulo = "21 ms"
+detalle = "lee solo la columna pedida"
+x = 960
+y = 560
+w = 400
+h = 120
+resultado = true

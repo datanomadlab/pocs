@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/duckdb.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "DuckDB"
+pregunta = "Un programa que responde consultas SQL sobre archivos, sin instalar ni mantener un servidor."
+nota = "Lee solo las columnas que la consulta menciona, desde tu disco o desde una dirección web."
+
+conectores = [
+  "M685 420V500",
+  "M402 560H520",
+  "M850 560H1000",
+]
+
+[[caja]]
+titulo = "tu consulta"
+detalle = "SQL desde la terminal o Python"
+x = 520
+y = 300
+w = 330
+h = 120
+
+[[caja]]
+titulo = "archivo"
+detalle = "parquet o csv, local o remoto"
+x = 72
+y = 500
+w = 330
+h = 120
+
+[[caja]]
+titulo = "duckdb"
+detalle = "en tu máquina, sin servidor"
+x = 520
+y = 500
+w = 330
+h = 120
+
+[[caja]]
+titulo = "respuesta"
+detalle = "3 millones de filas en 2,5 s"
+x = 1000
+y = 500
+w = 420
+h = 120
+resultado = true

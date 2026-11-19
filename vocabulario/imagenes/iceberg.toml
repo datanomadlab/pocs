@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/iceberg.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Apache Iceberg"
+pregunta = "Una lista que acompaña a tus archivos Parquet y dice cuáles forman la tabla en cada momento."
+nota = "Iceberg son el catálogo y los metadatos. Los datos siguen siendo archivos Parquet comunes."
+
+conectores = [
+  "M372 450H457",
+  "M757 450H842",
+  "M1142 450H1227",
+]
+
+[[caja]]
+titulo = "catálogo"
+detalle = "dice la versión vigente"
+x = 72
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "metadatos"
+detalle = "qué archivos hay hoy"
+x = 457
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "parquet"
+detalle = "los datos, por mes"
+x = 842
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "una tabla"
+detalle = "con versiones"
+x = 1227
+y = 390
+w = 300
+h = 120
+resultado = true

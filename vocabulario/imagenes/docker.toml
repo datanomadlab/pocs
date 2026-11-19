@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/docker.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Docker"
+pregunta = "Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina."
+nota = "La imagen es la receta, el contenedor es el plato servido. Al borrar el contenedor, tu máquina queda como estaba."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+]
+
+[[caja]]
+titulo = "imagen"
+detalle = "el paquete armado: postgres:18"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "contenedor"
+detalle = "la imagen corriendo, aislada"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "postgres funcionando"
+detalle = "sin instalar nada en tu sistema"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "volumen"
+detalle = "los datos que quieres conservar"
+x = 520
+y = 600
+w = 330
+h = 120
