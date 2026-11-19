@@ -1,0 +1,23 @@
+[project]
+name = "lakehouse-de-bolsillo"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "duckdb>=2.0.0",
+    "pyiceberg[pyarrow,pyiceberg-core,sql-sqlite]>=0.12.0",
+    "sqlglot>=30.33",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+bq = [
+    "google-cloud-bigquery>=3",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov=lakehouse --cov-report=term-missing"

@@ -1,0 +1,55 @@
+# Diagrama del experimento. Se dibuja con: tools/diagrama.py 01-lakehouse-de-bolsillo
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. La caja "veredicto" va en ámbar.
+numero = "01"
+titulo = "Lakehouse de bolsillo"
+pregunta = "¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket?"
+nota = "Las mismas 5 consultas en los dos caminos. DuckDB medido en local; BigQuery estimado con sus reglas de cobro."
+
+conectores = [
+  "M372 450H436V320H500",
+  "M436 450V580H714",
+  "M800 320H928",
+  "M1228 320H1394V390",
+  "M1014 580H1394V510",
+]
+
+[[caja]]
+titulo = "nyc tlc"
+detalle = "viajes de taxi, parquet público"
+x = 72
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "iceberg"
+detalle = "tabla por mes en un bucket"
+x = 500
+y = 260
+w = 300
+h = 120
+
+[[caja]]
+titulo = "duckdb"
+detalle = "consulta desde un contenedor"
+x = 928
+y = 260
+w = 300
+h = 120
+
+[[caja]]
+titulo = "bigquery"
+detalle = "tabla nativa, por demanda"
+x = 714
+y = 520
+w = 300
+h = 120
+
+[[caja]]
+titulo = "veredicto"
+detalle = "costo, latencia y horas"
+x = 1260
+y = 390
+w = 268
+h = 120
+veredicto = true

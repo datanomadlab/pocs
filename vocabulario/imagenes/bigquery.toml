@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/bigquery.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "BigQuery"
+pregunta = "El warehouse de Google Cloud: consultas con SQL y pagas por los datos que lee cada consulta."
+nota = "Por demanda se cobran completas las columnas que la consulta nombra, sin importar cuántas filas devuelva."
+
+conectores = [
+  "M685 420V500",
+  "M402 560H520",
+  "M850 560H1000",
+]
+
+[[caja]]
+titulo = "dry run"
+detalle = "cuánto leería, sin costo"
+x = 520
+y = 300
+w = 330
+h = 120
+
+[[caja]]
+titulo = "tu consulta"
+detalle = "nombra dos columnas"
+x = 72
+y = 500
+w = 330
+h = 120
+
+[[caja]]
+titulo = "bigquery"
+detalle = "lee esas columnas completas"
+x = 520
+y = 500
+w = 330
+h = 120
+
+[[caja]]
+titulo = "la cuenta"
+detalle = "bytes leídos por el precio"
+x = 1000
+y = 500
+w = 420
+h = 120
+resultado = true

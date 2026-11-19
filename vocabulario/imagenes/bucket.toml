@@ -1,0 +1,46 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/bucket.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Bucket"
+pregunta = "Una carpeta en la nube: guardas archivos de cualquier tamaño y los lees por internet, por partes."
+nota = "La lectura por rango es lo que permite analizar un archivo grande sin descargarlo entero."
+
+conectores = [
+  "M402 400H520",
+  "M850 400H968",
+  "M1168 460V640H850",
+  "M520 640H237V460",
+]
+
+[[caja]]
+titulo = "tu programa"
+detalle = "duckdb, curl o un script"
+x = 72
+y = 340
+w = 330
+h = 120
+
+[[caja]]
+titulo = "lectura por rango"
+detalle = "pide solo un trozo"
+x = 520
+y = 340
+w = 330
+h = 120
+
+[[caja]]
+titulo = "bucket"
+detalle = "un archivo de 50 MB en la nube"
+x = 968
+y = 340
+w = 400
+h = 120
+
+[[caja]]
+titulo = "8 bytes"
+detalle = "llega solo lo que pediste"
+x = 520
+y = 580
+w = 330
+h = 120
+resultado = true

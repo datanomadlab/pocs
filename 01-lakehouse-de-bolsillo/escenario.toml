@@ -1,0 +1,52 @@
+# Precios y escenarios del modelo de costos. Todo en USD.
+# IMPORTANTE: los precios cambian. Revisa cada fuente antes de publicar y actualiza "revisado".
+
+[bigquery]
+# Fuente: https://cloud.google.com/bigquery/pricing (por demanda, región US)
+revisado = "2026-11-17"
+usd_por_tib = 6.25            # cómputo por demanda
+tib_gratis_mes = 1.0          # primer TiB de consultas del mes
+usd_por_gib_mes = 0.02        # almacenamiento lógico activo
+gib_gratis_mes = 10.0
+minimo_bytes_por_tabla = 10_485_760   # 10 MiB mínimos por tabla referenciada
+
+[bucket]
+# Fuente: https://cloud.google.com/storage/pricing (Standard, us-central1)
+revisado = "2026-11-17"
+usd_por_gb_mes = 0.020
+
+[computo]
+# DuckDB en un contenedor que se paga por segundo (Cloud Run).
+# Fuente: https://cloud.google.com/run/pricing
+# OJO: Cloud Run tiene dos modelos de cobro (por solicitud y por instancia) con tarifas y capa
+# gratuita distintas. Confirma cuál aplica a tu caso y ajusta las cuatro cifras de abajo.
+revisado = "2026-11-17"
+vcpu = 4                      # la medición local limita DuckDB a estos hilos
+memoria_gib = 8               # y a esta memoria
+usd_por_vcpu_s = 0.000024
+usd_por_gib_s = 0.0000025
+vcpu_s_gratis_mes = 180_000
+gib_s_gratis_mes = 360_000
+arranque_s = 10               # SUPUESTO, no medido: arranque del contenedor + latencia del bucket por ejecución
+
+# Una "ejecución" = correr las 5 consultas una vez (por ejemplo, refrescar un dashboard).
+# factor_datos multiplica el volumen medido (3 meses de taxis ≈ 9,5 M de filas).
+# SUPUESTO: bytes escaneados y tiempo de DuckDB crecen en proporción al volumen.
+
+[[escenario]]
+nombre = "De bolsillo"
+detalle = "los datos medidos, dashboard que se refresca cada hora"
+factor_datos = 1
+ejecuciones_dia = 24
+
+[[escenario]]
+nombre = "Equipo chico"
+detalle = "100 veces más datos, refresco cada 15 minutos"
+factor_datos = 100
+ejecuciones_dia = 96
+
+[[escenario]]
+nombre = "Empresa mediana"
+detalle = "1.000 veces más datos, refresco cada 15 minutos"
+factor_datos = 1000
+ejecuciones_dia = 96
