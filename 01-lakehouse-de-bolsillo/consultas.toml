@@ -1,0 +1,30 @@
+# Las 5 consultas del experimento. El SQL vive en sql/duckdb y sql/bigquery (mismo nombre).
+# "columnas" son las que la consulta toca: BigQuery por demanda cobra por esas columnas completas.
+# "solo_primer_mes": la consulta filtra por el primer mes cargado, así que ambos motores
+# pueden saltarse las demás particiones.
+
+[[consulta]]
+nombre = "q1_ingresos_por_mes"
+descripcion = "Viajes e ingresos por mes"
+columnas = ["inicio", "total"]
+
+[[consulta]]
+nombre = "q2_propina_por_pago"
+descripcion = "Propina promedio según medio de pago"
+columnas = ["tipo_pago", "propina", "tarifa"]
+
+[[consulta]]
+nombre = "q3_top_zonas"
+descripcion = "Las 10 zonas de origen con más ingresos"
+columnas = ["zona_origen", "total"]
+
+[[consulta]]
+nombre = "q4_horas_punta_un_mes"
+descripcion = "Viajes por hora en un solo mes (poda de particiones)"
+columnas = ["inicio", "distancia_millas"]
+solo_primer_mes = true
+
+[[consulta]]
+nombre = "q5_duracion_por_dia"
+descripcion = "Duración p50 y p95 por día de la semana"
+columnas = ["inicio", "fin"]

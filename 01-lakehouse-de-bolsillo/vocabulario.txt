@@ -1,0 +1,5 @@
+parquet
+iceberg
+duckdb
+bigquery
+bucket
