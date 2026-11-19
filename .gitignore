@@ -181,3 +181,12 @@ rustpoc/empleados.csv
 
 .modelos/
 modelos/
+# Borradores de ediciones y posts: nunca se suben
+ediciones/
+*.edicion.md
+
+# Páginas generadas para copiar a Substack
+vocabulario/_substack/
+
+
+.DS_Store
