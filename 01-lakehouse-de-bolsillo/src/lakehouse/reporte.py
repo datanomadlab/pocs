@@ -54,7 +54,116 @@ def escenarios(local: dict, esc: dict) -> list[dict]:
     return filas
 
 
-def markdown(local: dict, esc: dict, medido_bq: dict | None) -> str:
+MESES = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre",
+         "octubre", "noviembre", "diciembre")
+
+
+def fecha_larga(iso: str) -> str:
+    """2026-11-19 -> 19 de noviembre de 2026."""
+    anio, mes, dia = (int(x) for x in iso.split("-"))
+    return f"{dia} de {MESES[mes - 1]} de {anio}"
+
+
+def usd_corto(valor: float) -> str:
+    """Dólares para una imagen o un post: sin centavos salvo en montos menores a 1."""
+    if valor == 0:
+        return "USD 0"
+    if valor < 1:
+        return "USD " + es(f"{valor:.3f}".rstrip("0"))
+    return "USD " + es(f"{valor:,.0f}")
+
+
+def _toml(valor) -> str:
+    if isinstance(valor, list):
+        return "[" + ", ".join(_toml(v) for v in valor) + "]"
+    return '"' + str(valor).replace("\\", "\\\\").replace('"', '\\"') + '"'
+
+
+def _bloque(**campos) -> list[str]:
+    out = ["[[tabla]]"]
+    for clave, valor in campos.items():
+        if clave == "filas":
+            out.append("filas = [\n" + "".join(f"  {_toml(f)},\n" for f in valor) + "]")
+        else:
+            out.append(f"{clave} = {_toml(valor)}")
+    return out + [""]
+
+
+def tablas(local: dict, esc: dict, sim: dict | None) -> str:
+    """docs/tablas.toml: las tablas del post, redondeadas, para dibujarlas con tools/tabla.py.
+
+    Substack no tiene tablas, así que el post las lleva como imagen. Salen de la misma medición
+    que docs/resultados.md para que la imagen nunca quede desfasada.
+    """
+    simulado = {c["nombre"]: c for c in (sim or {}).get("consultas", [])}
+
+    def igual(nombre: str) -> str:
+        c = simulado[nombre]
+        if not c["mismo_resultado"]:
+            return "distinto"
+        dif = c["diferencia_max"] or 0
+        return "igual" if dif == 0 else f"igual (±{es(format(dif * 100, '.1f'))} %)"
+
+    columnas = ["Consulta", "DuckDB sobre Iceberg", "BigQuery leería"]
+    etiquetas = ["", "medido", "estimado"]
+    filas = [[c["descripcion"].replace(" (poda de particiones)", ""), _ms(c["frio_s"]),
+              es(f"{c['bq_bytes_estimados'] / 1e6:,.0f}") + " MB"] for c in local["consultas"]]
+    total = ["Total", es(f"{sum(c['frio_s'] for c in local['consultas']):.2f}") + " s",
+             es(f"{sum(c['bq_bytes_estimados'] for c in local['consultas']) / 1e6:,.0f}") + " MB"]
+    if sim:
+        columnas.append("SQL de BigQuery")
+        etiquetas.append("simulado")
+        filas = [f + [igual(c["nombre"])] for f, c in zip(filas, local["consultas"])]
+        iguales = sum(simulado[c["nombre"]]["mismo_resultado"] for c in local["consultas"])
+        total.append(f"{iguales} de {len(local['consultas'])} iguales")
+    m = local["maquina"]
+    nota = (f"DuckDB medido el {fecha_larga(local['fecha'])} en {m['cpu']} con disco local, {local['hilos']} hilos y "
+            f"{local['memoria_gib']} GB. BigQuery estimado con sus reglas de cobro por demanda.")
+    if sim:
+        nota += " SQL de BigQuery traducido y corrido sobre la misma tabla, sin cuenta de GCP."
+    out = ["# Generado por make demo. No lo edites a mano. Se dibuja con tools/tabla.py.", ""]
+    out += _bloque(id="consultas", titulo="Las mismas 5 consultas en los dos caminos", columnas=columnas,
+                   etiquetas=etiquetas, filas=filas, total=total, nota=nota)
+    out += _bloque(id="escenarios", titulo="Costo mensual por escenario",
+                   columnas=["Escenario", "BigQuery", "Lakehouse"], etiquetas=["", "modelo", "modelo"],
+                   filas=[[f["escenario"]["detalle"].replace("dashboard que se refresca", "refresco")
+                           .replace("los datos medidos", "Los datos medidos")
+                           .replace("15 minutos", "15 min"),
+                           usd_corto(f["con_gratis"]["bq"].total), usd_corto(f["con_gratis"]["lake"].total)]
+                          for f in escenarios(local, esc)],
+                   nota="Modelo, no una factura. Una ejecución son las 5 consultas una vez. Precios por demanda "
+                        "con capa gratuita; supuestos en escenario.toml.")
+    return "\n".join(out)
+
+
+def seccion_simulada(sim: dict, local: dict) -> list[str]:
+    estimados = {c["nombre"]: c for c in local["consultas"]}
+    out = ["",
+           "## BigQuery simulado",
+           "",
+           f"Esto es una **simulación**, sin cuenta de GCP. Cada `sql/bigquery/*.sql` se leyó con el "
+           f"analizador de dialecto BigQuery de sqlglot {sim['sqlglot']}, se tradujo a DuckDB y se corrió "
+           "sobre la misma tabla. Comprueba que el SQL es válido, que da lo mismo que la versión DuckDB y "
+           "qué columnas y particiones leería BigQuery. **No** mide sus tiempos ni sus bytes facturados.",
+           "",
+           "| Consulta | SQL válido y mismo resultado | Columnas que lee | Poda particiones | "
+           "Bytes según el SQL (simulado) | Coincide con la estimación |",
+           "|---|---|---|---|---|---|"]
+    for c in sim["consultas"]:
+        dif = c["diferencia_max"]
+        igual = ("sí" if dif == 0 else f"sí, a {es(format(dif * 100, '.1f'))} %") if c["mismo_resultado"] else "**no**"
+        coincide = (c["columnas_coinciden"] and c["poda_coincide"]
+                    and c["bytes_simulados"] == estimados[c["nombre"]]["bq_bytes_estimados"])
+        out.append(f"| {estimados[c['nombre']]['descripcion']} | {igual} | {', '.join(c['columnas_sql'])} | "
+                   f"{'sí' if c['poda_particiones'] else 'no'} | {_mb(c['bytes_simulados'])} | "
+                   f"{'sí' if coincide else '**no**'} |")
+    out += ["",
+            f"La diferencia permitida es {es(format(sim['tolerancia'] * 100, '.0f'))} %: BigQuery calcula los "
+            "percentiles con `APPROX_QUANTILES`, que es aproximado, y DuckDB con `quantile_cont`, que es exacto."]
+    return out
+
+
+def markdown(local: dict, esc: dict, medido_bq: dict | None, simulado: dict | None = None) -> str:
     bq = esc["bigquery"]
     m = local["maquina"]
     out = ["# Resultados · Experimento 01",
@@ -92,6 +201,8 @@ def markdown(local: dict, esc: dict, medido_bq: dict | None) -> str:
     if not medido_bq:
         out += ["", "BigQuery todavía no está medido. Corre `make bq` con una cuenta propia de GCP "
                     "para agregar los bytes facturados y los tiempos reales."]
+    if simulado:
+        out += seccion_simulada(simulado, local)
     out += ["",
             "## Almacenamiento",
             "",

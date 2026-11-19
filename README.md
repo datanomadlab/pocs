@@ -55,7 +55,7 @@ flowchart LR
 1. Una pregunta por experimento. Si no cabe en una frase, es demasiado grande.
 2. Datos públicos y cuentas propias. El dataset se descarga con un script; no se sube al repo.
 3. `make demo` corre en una máquina limpia y `make destroy` no deja nada cobrando en la nube.
-4. Cada número dice de dónde viene: **medido** (salió de correr el código), **estimado** (calculado sobre los datos con reglas públicas) o **modelo** (proyección con supuestos escritos).
+4. Cada número dice de dónde viene: **medido** (salió de correr el código), **estimado** (calculado sobre los datos con reglas públicas), **simulado** (el código de un servicio corrido en local, sin la cuenta: comprueba que funciona y qué daría, no cuánto tarda ni cuánto cobra) o **modelo** (proyección con supuestos escritos).
 5. El veredicto se escribe aunque sea "no todavía".
 
 ### Partir un experimento nuevo
@@ -77,6 +77,8 @@ uv run --no-project --with fonttools --with brotli --with cairosvg --with pillow
 ```
 
 Para la imagen de un post de vocabulario, el mismo comando recibe el archivo: `tools/diagrama.py vocabulario/imagenes/docker.toml`.
+
+Las tablas del post van como imagen, porque Substack no tiene tablas. `make demo` escribe `docs/tablas.toml` y `tools/tabla.py 01-lakehouse-de-bolsillo` (con las mismas opciones de `uv run`) dibuja `docs/tabla-<id>.png`.
 
 Necesita la librería cairo (`brew install cairo`) y el repo `datanomadlab` clonado al lado de este. Si está en otra ruta, indícala con `DNL_SITIO=/ruta/al/sitio`. El README de cada experimento lleva además un diagrama Mermaid, que GitHub muestra sin generar nada.
 

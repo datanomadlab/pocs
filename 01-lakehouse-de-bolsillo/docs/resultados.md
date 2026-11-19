@@ -5,7 +5,7 @@
 - **Datos:** NYC TLC, taxis amarillos, meses 2024-01, 2024-02, 2024-03 (9.554.722 viajes).
 - **Máquina:** Darwin 25.6.0, Apple M4 Pro, 14 núcleos. DuckDB limitado a 4 hilos y 8 GB para parecerse a un contenedor chico.
 - **Versiones:** DuckDB 2.0.0, PyIceberg 0.12.0.
-- **Fecha de la medición:** 2026-11-17.
+- **Fecha de la medición:** 2026-11-19.
 
 ## Por consulta
 
@@ -13,13 +13,27 @@ DuckDB está **medido** en esta máquina, leyendo la tabla Iceberg desde disco l
 
 | Consulta | DuckDB en frío | DuckDB mediana | BigQuery: bytes estimados | BigQuery: USD por corrida |
 |---|---|---|---|---|
-| Viajes e ingresos por mes | 78 ms | 70 ms | 152,9 MB | 0,000869 |
-| Propina promedio según medio de pago | 42 ms | 41 ms | 229,3 MB | 0,001303 |
-| Las 10 zonas de origen con más ingresos | 20 ms | 20 ms | 152,9 MB | 0,000869 |
-| Viajes por hora en un solo mes (poda de particiones) | 24 ms | 25 ms | 47,4 MB | 0,00027 |
-| Duración p50 y p95 por día de la semana | 181 ms | 169 ms | 152,9 MB | 0,000869 |
+| Viajes e ingresos por mes | 89 ms | 72 ms | 152,9 MB | 0,000869 |
+| Propina promedio según medio de pago | 47 ms | 42 ms | 229,3 MB | 0,001303 |
+| Las 10 zonas de origen con más ingresos | 22 ms | 20 ms | 152,9 MB | 0,000869 |
+| Viajes por hora en un solo mes (poda de particiones) | 27 ms | 25 ms | 47,4 MB | 0,00027 |
+| Duración p50 y p95 por día de la semana | 186 ms | 167 ms | 152,9 MB | 0,000869 |
 
 BigQuery todavía no está medido. Corre `make bq` con una cuenta propia de GCP para agregar los bytes facturados y los tiempos reales.
+
+## BigQuery simulado
+
+Esto es una **simulación**, sin cuenta de GCP. Cada `sql/bigquery/*.sql` se leyó con el analizador de dialecto BigQuery de sqlglot 30.33.0, se tradujo a DuckDB y se corrió sobre la misma tabla. Comprueba que el SQL es válido, que da lo mismo que la versión DuckDB y qué columnas y particiones leería BigQuery. **No** mide sus tiempos ni sus bytes facturados.
+
+| Consulta | SQL válido y mismo resultado | Columnas que lee | Poda particiones | Bytes según el SQL (simulado) | Coincide con la estimación |
+|---|---|---|---|---|---|
+| Viajes e ingresos por mes | sí | inicio, total | no | 152,9 MB | sí |
+| Propina promedio según medio de pago | sí | propina, tarifa, tipo_pago | no | 229,3 MB | sí |
+| Las 10 zonas de origen con más ingresos | sí | total, zona_origen | no | 152,9 MB | sí |
+| Viajes por hora en un solo mes (poda de particiones) | sí | distancia_millas, inicio | sí | 47,4 MB | sí |
+| Duración p50 y p95 por día de la semana | sí, a 0,3 % | fin, inicio | no | 152,9 MB | sí |
+
+La diferencia permitida es 1 %: BigQuery calcula los percentiles con `APPROX_QUANTILES`, que es aproximado, y DuckDB con `quantile_cont`, que es exacto.
 
 ## Almacenamiento
 
@@ -36,8 +50,8 @@ Esto es un **modelo**, no una factura. Una ejecución son las 5 consultas una ve
 | Escenario | BigQuery (USD/mes) | Lakehouse (USD/mes) | Ahorro | BigQuery sin capa gratuita | Lakehouse sin capa gratuita | Ahorro sin capa gratuita |
 |---|---|---|---|---|---|---|
 | **De bolsillo**: los datos medidos, dashboard que se refresca cada hora | 0 | 0,003286 | no hay costo que ahorrar | 3,04 | 0,87 | 71 % |
-| **Equipo chico**: 100 veces más datos, refresco cada 15 minutos | 1.199,99 | 10,01 | 99 % | 1.206,44 | 15,23 | 99 % |
-| **Empresa mediana**: 1.000 veces más datos, refresco cada 15 minutos | 12.057,95 | 116,97 | 99 % | 12.064,40 | 122,19 | 99 % |
+| **Equipo chico**: 100 veces más datos, refresco cada 15 minutos | 1.199,99 | 10,82 | 99 % | 1.206,44 | 16,04 | 99 % |
+| **Empresa mediana**: 1.000 veces más datos, refresco cada 15 minutos | 12.057,95 | 125,11 | 99 % | 12.064,40 | 130,33 | 99 % |
 
 ### Supuestos del modelo
 

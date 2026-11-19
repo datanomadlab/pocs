@@ -29,14 +29,14 @@ def _cpu() -> str:
 
 def preparar() -> None:
     meses = config.meses()
-    print("1/3 Descargando datos públicos de NYC TLC")
+    print("1/4 Descargando datos públicos de NYC TLC")
     rutas = datos.descargar(meses)
-    print("2/3 Creando la tabla Iceberg particionada por mes")
+    print("2/4 Creando la tabla Iceberg particionada por mes")
     tabla.crear_y_cargar(dict(zip(meses, rutas)))
 
 
 def medir() -> None:
-    print("3/3 Corriendo las consultas en DuckDB sobre Iceberg")
+    print("3/4 Corriendo las consultas en DuckDB sobre Iceberg")
     meses = config.meses()
     esc = config.cargar_escenario()
     hilos, memoria = esc["computo"]["vcpu"], esc["computo"]["memoria_gib"]
@@ -63,14 +63,29 @@ def medir() -> None:
     config.MEDICION_LOCAL.write_text(json.dumps(local, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+def simular() -> None:
+    from . import simulacion
+    print("4/4 Simulando BigQuery: su SQL traducido y corrido sobre la misma tabla")
+    meses = config.meses()
+    esc = config.cargar_escenario()
+    con = consultas.conectar(tabla.abrir().metadata_location, esc["computo"]["vcpu"],
+                             esc["computo"]["memoria_gib"])
+    resultado = simulacion.simular(con, config.cargar_consultas(), meses[0], consultas.perfil_bytes(con))
+    sim = {"sqlglot": version("sqlglot"), "tolerancia": simulacion.TOLERANCIA, "consultas": resultado}
+    config.MEDICION_SIM.write_text(json.dumps(sim, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
 def escribir_reporte() -> None:
     if not config.MEDICION_LOCAL.exists():
         raise RuntimeError("No hay medición local. Corre primero: make demo")
     local = json.loads(config.MEDICION_LOCAL.read_text(encoding="utf-8"))
     medido = (json.loads(config.MEDICION_BQ.read_text(encoding="utf-8"))
               if config.MEDICION_BQ.exists() else None)
-    texto = reporte.markdown(local, config.cargar_escenario(), medido)
+    simulado = (json.loads(config.MEDICION_SIM.read_text(encoding="utf-8"))
+                if config.MEDICION_SIM.exists() else None)
+    texto = reporte.markdown(local, config.cargar_escenario(), medido, simulado)
     config.RESULTADOS.write_text(texto, encoding="utf-8")
+    config.TABLAS.write_text(reporte.tablas(local, config.cargar_escenario(), simulado), encoding="utf-8")
     print(texto)
     print(f"\nGuardado en {config.RESULTADOS.relative_to(config.RAIZ)}")
 
@@ -95,7 +110,7 @@ def destruir() -> None:
     print("Datos locales borrados")
 
 
-PASOS = {"preparar": preparar, "medir": medir, "reporte": escribir_reporte, "bq": bq,
+PASOS = {"preparar": preparar, "medir": medir, "simular": simular, "reporte": escribir_reporte, "bq": bq,
          "destruir": destruir}
 
 
@@ -104,7 +119,7 @@ def main() -> int:
     parser.add_argument("paso", choices=[*PASOS, "demo"])
     paso = parser.parse_args().paso
     try:
-        for nombre in (["preparar", "medir", "reporte"] if paso == "demo" else [paso]):
+        for nombre in (["preparar", "medir", "simular", "reporte"] if paso == "demo" else [paso]):
             PASOS[nombre]()
     except (RuntimeError, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
