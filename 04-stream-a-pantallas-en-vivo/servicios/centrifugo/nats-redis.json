@@ -1,0 +1,44 @@
+{
+  "engine": {
+    "type": "redis",
+    "redis": {
+      "address": "redis:6379"
+    }
+  },
+  "client": {
+    "allow_anonymous_connect_without_token": true,
+    "allowed_origins": [
+      "*"
+    ]
+  },
+  "channel": {
+    "namespaces": [
+      {
+        "name": "cuenta",
+        "allow_subscribe_for_client": true,
+        "allow_subscribe_for_anonymous": true,
+        "history_size": 300,
+        "history_ttl": "60s",
+        "force_recovery": true
+      }
+    ]
+  },
+  "consumers": [
+    {
+      "enabled": true,
+      "name": "eventos",
+      "type": "nats_jetstream",
+      "nats_jetstream": {
+        "url": "nats://nats:4222",
+        "stream_name": "EVENTOS",
+        "subjects": [
+          "eventos.>"
+        ],
+        "durable_consumer_name": "pantallas",
+        "publication_data_mode": {
+          "enabled": true
+        }
+      }
+    }
+  ]
+}

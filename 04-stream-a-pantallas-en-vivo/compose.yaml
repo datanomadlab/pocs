@@ -1,0 +1,129 @@
+# Las piezas de todas las rutas. El experimento levanta una ruta a la vez con perfiles:
+# un transporte (redpanda, nats, kinesis o sqs) y una pieza que entrega a las pantallas
+# (go, node, centrifugo, zilla o emqx). Ver rutas.toml.
+#
+# Cada transporte y cada pieza de entrega tiene el mismo tope: 2 núcleos y 2 GB. Sin tope, la
+# comparación mediría el computador y no la herramienta.
+name: stream-a-pantallas
+
+x-tope: &tope
+  cpus: 2
+  mem_limit: 2g
+
+x-entrega: &entrega
+  <<: *tope
+  environment:
+    TRANSPORTE: ${TRANSPORTE:-}
+    DESTINO: ${DESTINO_LECTOR:-}
+    SESION_MS: ${SESION_MS:-}
+
+services:
+  # --- Transportes ---------------------------------------------------------------------------
+  redpanda:
+    profiles: [redpanda]
+    <<: *tope
+    image: docker.redpanda.com/redpandadata/redpanda:v26.3.1
+    # dev-container apaga fsync: sirve para comparar rutas en un computador, no para medir un
+    # broker durable. --smp fija los núcleos que usa Redpanda.
+    command: >
+      redpanda start --mode dev-container --smp 2 --memory 1500M
+      --kafka-addr 0.0.0.0:9092 --advertise-kafka-addr redpanda:9092
+      --default-log-level=warn
+
+  nats:
+    profiles: [nats]
+    <<: *tope
+    image: nats:2.15.3
+    command: ["-js", "-sd", "/data"]
+
+  # Emulador de Kinesis. Comprueba que el código funciona; no dice cuánto tarda ni cuánto cobra AWS.
+  kinesis:
+    profiles: [kinesis]
+    <<: *tope
+    image: ghcr.io/etspaceman/kinesis-mock:0.6.2
+    environment:
+      LOG_LEVEL: WARN
+
+  # Emulador de SQS, con colas FIFO. La misma advertencia que el de Kinesis.
+  sqs:
+    profiles: [sqs]
+    <<: *tope
+    image: softwaremill/elasticmq-native:1.7.1
+
+  # --- Piezas que entregan a las pantallas ---------------------------------------------------
+  consumidor-go:
+    profiles: [go]
+    <<: *entrega
+    image: stream-a-pantallas-go
+    build: servicios/go
+    command: consumidor
+    volumes: [estado:/estado]
+
+  consumidor-node:
+    profiles: [node]
+    <<: *entrega
+    image: stream-a-pantallas-node
+    build: servicios/node
+
+  centrifugo:
+    profiles: [centrifugo]
+    <<: *tope
+    image: centrifugo/centrifugo:v6.10.3
+    command: centrifugo --config /etc/centrifugo/${TRANSPORTE:-redpanda}.json
+    volumes: [./servicios/centrifugo:/etc/centrifugo:ro]
+    environment:
+      # Solo los usa el consumidor de SQS, contra el emulador.
+      AWS_ACCESS_KEY_ID: local
+      AWS_SECRET_ACCESS_KEY: local
+    restart: on-failure
+
+  # Centrifugo con el historial de los canales en Redis: sobrevive al reinicio de Centrifugo.
+  centrifugo-redis:
+    profiles: [centrifugo-redis]
+    <<: *tope
+    image: centrifugo/centrifugo:v6.10.3
+    command: centrifugo --config /etc/centrifugo/${TRANSPORTE:-nats}-redis.json
+    volumes: [./servicios/centrifugo:/etc/centrifugo:ro]
+    depends_on: [redis]
+    restart: on-failure
+
+  redis:
+    profiles: [centrifugo-redis]
+    image: redis:8-alpine
+    cpus: 1
+    mem_limit: 1g
+
+  # Zilla: proxy que reparte el tópico de Kafka por Server-Sent Events. Solo configuración.
+  zilla:
+    profiles: [zilla]
+    <<: *tope
+    image: ghcr.io/aklivity/zilla:2.7.1
+    command: start -v -e
+    volumes: [./servicios/zilla/zilla.yaml:/etc/zilla/zilla.yaml:ro]
+    restart: on-failure
+
+  # EMQX: broker MQTT que lee de Kafka y entrega por MQTT sobre WebSocket. Solo configuración.
+  emqx:
+    profiles: [emqx]
+    <<: *tope
+    image: emqx/emqx:6.3.3
+    volumes: [./servicios/emqx/base.hocon:/opt/emqx/etc/base.hocon:ro]
+    restart: on-failure
+
+  # --- Carga y medición (se corren con `docker compose run`) ---------------------------------
+  generador:
+    profiles: [herramientas]
+    image: stream-a-pantallas-go   # la construye consumidor-go: make setup
+    pull_policy: never
+    entrypoint: generador
+    cpus: 2
+
+  sonda:
+    profiles: [herramientas]
+    image: stream-a-pantallas-go   # la construye consumidor-go: make setup
+    pull_policy: never
+    entrypoint: sonda
+    cpus: 2
+
+volumes:
+  estado:

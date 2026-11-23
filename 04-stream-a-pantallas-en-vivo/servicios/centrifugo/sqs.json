@@ -1,0 +1,29 @@
+{
+  "client": {"allow_anonymous_connect_without_token": true, "allowed_origins": ["*"]},
+  "channel": {
+    "namespaces": [
+      {
+        "name": "cuenta",
+        "allow_subscribe_for_client": true,
+        "allow_subscribe_for_anonymous": true,
+        "history_size": 300,
+        "history_ttl": "60s",
+        "force_recovery": true
+      }
+    ]
+  },
+  "consumers": [
+    {
+      "enabled": true,
+      "name": "eventos",
+      "type": "aws_sqs",
+      "aws_sqs": {
+        "queues": ["http://sqs:9324/000000000000/eventos.fifo"],
+        "region": "us-east-1",
+        "localstack_endpoint": "http://sqs:9324",
+        "wait_time_time": "1s",
+        "publication_data_mode": {"enabled": true}
+      }
+    }
+  ]
+}

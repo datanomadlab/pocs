@@ -1,0 +1,127 @@
+# Las rutas que compara el experimento. Una ruta = un transporte + la pieza que entrega a las
+# pantallas. `make demo` las corre de a una; para correr solo algunas: RUTAS=redpanda-go,nats-go
+#
+# etiqueta = "medido":   todas las piezas corren de verdad en esta máquina.
+# etiqueta = "simulado": el transporte es un emulador de un servicio de AWS. Comprueba que la ruta
+#                        funciona (orden, pérdida, qué pasa en un corte y cuánto código pide);
+#                        no dice cuánto tarda ni cuánto aguanta el servicio real. Por eso corre a
+#                        una tasa menor y sin rampa.
+
+[[ruta]]
+id = "redpanda-go"
+corto = "Redpanda + Go"
+transporte = "redpanda"
+entrega = "go"
+nombre = "Redpanda + consumidor en Go"
+etiqueta = "medido"
+
+# La misma ruta con el tiempo de sesión del grupo de consumidores en 6 s en vez de los 45 s de
+# fábrica: cuánto tarda el broker en dar por muerta a la instancia que se cayó.
+[[ruta]]
+id = "redpanda-go-sesion"
+corto = "Redpanda + Go, 6 s"
+transporte = "redpanda"
+entrega = "go"
+nombre = "Redpanda + consumidor en Go, sesión de 6 s"
+etiqueta = "medido"
+sesion_ms = "6000"
+
+[[ruta]]
+id = "redpanda-node"
+corto = "Redpanda + Node"
+transporte = "redpanda"
+entrega = "node"
+nombre = "Redpanda + consumidor en Node"
+etiqueta = "medido"
+
+[[ruta]]
+id = "redpanda-centrifugo"
+corto = "Redpanda + Centrifugo"
+transporte = "redpanda"
+entrega = "centrifugo"
+nombre = "Redpanda + Centrifugo"
+etiqueta = "medido"
+
+# Zilla no usa grupo de consumidores: lee el tópico a una caché y cada pantalla pide por SSE
+# desde dónde seguir. No hay sesión que el broker tenga que dar por muerta.
+[[ruta]]
+id = "redpanda-zilla"
+corto = "Redpanda + Zilla"
+transporte = "redpanda"
+entrega = "zilla"
+nombre = "Redpanda + Zilla (SSE)"
+etiqueta = "medido"
+# Zilla no entregó ningún evento de los lotes comprimidos con snappy, que es como escribe de
+# fábrica el generador (y la mayoría de los clientes de Kafka). En esta ruta se escribe sin comprimir.
+sin_comprimir = true
+
+# EMQX es un broker MQTT: lee de Kafka con una regla y las pantallas se suscriben por MQTT
+# sobre WebSocket.
+[[ruta]]
+id = "redpanda-emqx"
+corto = "Redpanda + EMQX"
+transporte = "redpanda"
+entrega = "emqx"
+nombre = "Redpanda + EMQX (MQTT)"
+etiqueta = "medido"
+
+[[ruta]]
+id = "nats-go"
+corto = "NATS + Go"
+transporte = "nats"
+entrega = "go"
+nombre = "NATS + consumidor en Go"
+etiqueta = "medido"
+
+[[ruta]]
+id = "nats-node"
+corto = "NATS + Node"
+transporte = "nats"
+entrega = "node"
+nombre = "NATS + consumidor en Node"
+etiqueta = "medido"
+
+[[ruta]]
+id = "nats-centrifugo"
+corto = "NATS + Centrifugo"
+transporte = "nats"
+entrega = "centrifugo"
+nombre = "NATS + Centrifugo"
+etiqueta = "medido"
+
+# Centrifugo guardando el historial de los canales en Redis en vez de en su propia memoria: al
+# reiniciarse, las pantallas pueden pedirle lo que se perdieron.
+[[ruta]]
+id = "nats-centrifugo-redis"
+corto = "NATS + Centrifugo/Redis"
+transporte = "nats"
+entrega = "centrifugo-redis"
+nombre = "NATS + Centrifugo con Redis"
+etiqueta = "medido"
+
+[[ruta]]
+id = "kinesis-go"
+corto = "Kinesis + Go"
+transporte = "kinesis"
+entrega = "go"
+nombre = "Kinesis + consumidor en Go"
+etiqueta = "simulado"
+# El emulador de Kinesis se pone lento a medida que acumula registros. Con más carga que esta, la
+# prueba mide al emulador y no a la ruta.
+tasa = 200
+
+[[ruta]]
+id = "sqs-go"
+corto = "SQS FIFO + Go"
+transporte = "sqs"
+entrega = "go"
+nombre = "SQS FIFO + consumidor en Go"
+etiqueta = "simulado"
+
+[[ruta]]
+id = "sqs-centrifugo"
+corto = "SQS FIFO + Centrifugo"
+transporte = "sqs"
+entrega = "centrifugo"
+nombre = "SQS FIFO + Centrifugo"
+etiqueta = "simulado"

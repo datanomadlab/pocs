@@ -1,0 +1,20 @@
+# Guion de docs/demo.gif. Se graba desde la raíz con: make demo-gif EXP=04-stream-a-pantallas-en-vivo
+# Cada comando corre de verdad y el GIF muestra su salida tal cual; solo se acortan las esperas largas.
+# Lo que se graba es público: ningún comando debe imprimir rutas de tu equipo ni nombres de usuario
+# (por eso `make test` no va: pytest imprime rootdir).
+
+titulo = "experimento 04 · stream a pantallas en vivo"
+
+# Corre antes de grabar y no sale en el GIF: así la demo parte sin datos.
+preparar = ["make destroy"]
+
+# Líneas que se muestran en gris: el eco de make.
+tenue = ['^uv (run|sync)\b']
+
+[[paso]]
+comando = "make demo"
+pausa = 7   # segundos para leer el resumen
+
+[[paso]]
+comando = "make destroy"
+pausa = 2

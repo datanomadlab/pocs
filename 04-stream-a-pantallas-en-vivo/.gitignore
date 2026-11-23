@@ -1,0 +1,9 @@
+data/
+.venv/
+.env
+__pycache__/
+.pytest_cache/
+.coverage
+node_modules/
+# Tus cifras: el modelo de costos las usa si existe, y nunca se suben.
+escenario.local.toml
