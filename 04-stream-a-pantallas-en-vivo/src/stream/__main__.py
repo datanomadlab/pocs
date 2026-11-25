@@ -13,7 +13,7 @@ import subprocess
 import sys
 import tomllib
 
-from . import config, contenedores, costos, medir, reporte
+from . import concurrencia, config, contenedores, costos, medir, reporte
 from .formato import entero
 
 IMAGEN = re.compile(r"^\s*image:\s*\S*?([\w.-]+):v?([\w.-]+)\s*$", re.MULTILINE)
@@ -152,7 +152,7 @@ def destruir() -> None:
 
 
 PASOS = {"preparar": preparar, "medir": medir_todo, "costos": calcular_costos, "reporte": escribir_reporte,
-         "local": costos_locales, "destruir": destruir}
+         "local": costos_locales, "concurrencia": concurrencia.correr, "destruir": destruir}
 
 
 def main() -> int:

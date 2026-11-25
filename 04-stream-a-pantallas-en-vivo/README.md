@@ -80,7 +80,7 @@ No hay dataset: la carga es sintética y la genera el propio experimento, porque
 - Kinesis y SQS son emuladores. Dicen si la ruta funciona, qué hace el código del consumidor frente a un corte y cuánto código pide; no dicen cuánto tarda ni cuánto aguanta el servicio real.
 - Con 100.000 emisores, cada uno emite cada 10 segundos: el orden por emisor solo queda a prueba para desórdenes más largos que eso, y en las rutas simuladas no queda a prueba.
 - Dos cortes por ruta. Lo que pasa al matar un consumidor depende de en qué estaba en ese instante.
-- 100 pantallas que se reconectan a los 100 ms. Con miles de conexiones, o con pantallas que tardan más en volver, el reparto pesa más y la pérdida en el corte crece.
+- 100 pantallas que se reconectan a los 100 ms. Con miles de conexiones, o con pantallas que tardan más en volver, el reparto pesa más y la pérdida en el corte crece. La prueba con miles de pantallas y varias por cuenta está aparte, en [docs/concurrencia.md](docs/concurrencia.md) (`make concurrencia`).
 - Redpanda corre en modo de desarrollo, sin `fsync`. Sirve para comparar rutas en la misma máquina, no como cifra de un broker durable.
 - Zilla y EMQX se midieron solo sobre Redpanda y no están en el modelo de costos. Con Zilla, la sonda espera a que termine de llegar el histórico antes de medir, y abre un flujo SSE por cuenta: 10 por pantalla.
 - Flink no se midió: su costo en el modelo depende de un supuesto de capacidad por KPU.
@@ -116,6 +116,8 @@ Para correr el modelo de costos con tus cifras sin subirlas, copia `escenario.to
 | [servicios/zilla](servicios/zilla) | La configuración de Zilla: de un tópico de Kafka a un flujo SSE por cuenta |
 | [servicios/emqx](servicios/emqx) | La configuración de EMQX: la lectura de Kafka y la regla que publica en el tema de cada cuenta |
 | [src/stream/medir.py](src/stream/medir.py) | Las tres pruebas de cada ruta |
+| [src/stream/concurrencia.py](src/stream/concurrencia.py) | La matriz de concurrencia: varias pantallas por cuenta, con carga, rampa y corte |
+| [servicios/go/internal/decorador](servicios/go/internal/decorador) | Prototipo para medir cuánto cuesta enriquecer un evento antes de entregarlo |
 | [src/stream/analisis.py](src/stream/analisis.py) | Qué pasó en un corte, si una ruta aguanta una tasa y cuántas líneas de código pide |
 | [src/stream/costos.py](src/stream/costos.py) | El modelo de costos, en funciones puras |
 | [escenario.toml](escenario.toml) | Precios con su fuente y fecha, y supuestos marcados |

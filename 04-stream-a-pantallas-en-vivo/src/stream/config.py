@@ -81,6 +81,8 @@ class Parametros:
     cortes: int
     sesion_ms: str
     rapido: bool
+    # Pantallas que miran cada cuenta. Con 1, cada evento llega a una sola pantalla.
+    espectadores: int = 1
 
     @property
     def segundos_nominal(self) -> int:
@@ -119,7 +121,8 @@ def parametros() -> Parametros:
         pantallas=_entero("PANTALLAS", 100), bytes=_entero("BYTES", 300),
         p99_max_ms=_entero("P99_MAX_MS", 1_000), cortes=_entero("CORTES", 2),
         sesion_ms=os.environ.get("SESION_MS", "").strip(),
-        rapido=os.environ.get("RAPIDO", "").strip() == "1")
+        rapido=os.environ.get("RAPIDO", "").strip() == "1",
+        espectadores=_entero("ESPECTADORES", 1))
 
 
 def rutas(todas: bool = False) -> list[Ruta]:

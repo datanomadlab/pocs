@@ -1,4 +1,4 @@
-.PHONY: setup demo costos local test destroy
+.PHONY: setup demo costos local concurrencia test destroy
 export PYTHONPATH := src
 export PYTHONUNBUFFERED := 1
 # Lo que cambies en .env (ver .env.example) llega al experimento.
@@ -17,6 +17,9 @@ costos:   ## recalcula solo el modelo de costos sobre la última medición (por 
 
 local:    ## el modelo de costos con tus cifras (escenario.local.toml). Sale a la terminal y a data/; no se sube
 	uv run python -m stream local
+
+concurrencia:  ## miles de pantallas, varias por cuenta: carga, rampa y corte. Cerca de una hora; sale a la terminal y a data/
+	uv run python -m stream concurrencia
 
 test:
 	uv run pytest
