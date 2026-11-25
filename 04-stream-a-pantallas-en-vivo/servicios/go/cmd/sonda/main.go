@@ -15,6 +15,7 @@ import (
 type opciones struct {
 	protocolo, destino, corrida string
 	pantallas, cuentas          int
+	espectadores                int
 	duracion                    time.Duration
 }
 
@@ -31,6 +32,7 @@ func main() {
 	flag.StringVar(&o.corrida, "corrida", "c0", "solo cuenta los eventos de esta corrida")
 	flag.IntVar(&o.pantallas, "pantallas", 100, "conexiones abiertas")
 	flag.IntVar(&o.cuentas, "cuentas", 1000, "cuentas, repartidas entre las pantallas")
+	flag.IntVar(&o.espectadores, "espectadores", 1, "pantallas que miran cada cuenta")
 	flag.DurationVar(&o.duracion, "duracion", 45*time.Second, "cuánto medir desde LISTO")
 	flag.Parse()
 
@@ -39,7 +41,12 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Error: protocolo desconocido %q\n", o.protocolo)
 		os.Exit(1)
 	}
+	if err := validar(o); err != nil {
+		fmt.Fprintln(os.Stderr, "Error:", err)
+		os.Exit(1)
+	}
 	r := nuevoRegistro(o.corrida)
+	r.o = o
 	listas := make(chan struct{}, o.pantallas)
 	go abrir(o, r, func() { listas <- struct{}{} })
 	for i := 0; i < o.pantallas; i++ {
@@ -56,11 +63,47 @@ func main() {
 	json.NewEncoder(os.Stdout).Encode(r.resumen())
 }
 
+// validar rechaza las combinaciones en que el reparto de cuentasDe no se cumple: más espectadores
+// por cuenta que pantallas, o tan pocas cuentas que alguna pantalla quedaría sin ninguna.
+func validar(o opciones) error {
+	switch {
+	case o.pantallas < 1 || o.cuentas < 1 || o.espectadores < 1:
+		return fmt.Errorf("pantallas, cuentas y espectadores tienen que ser al menos 1")
+	case o.espectadores > o.pantallas:
+		return fmt.Errorf("%d espectadores por cuenta no caben en %d pantallas", o.espectadores, o.pantallas)
+	case o.espectadores > 1 && o.cuentas*o.espectadores < o.pantallas:
+		return fmt.Errorf("con %d cuentas y %d espectadores por cuenta, alguna de las %d pantallas quedaría sin cuentas",
+			o.cuentas, o.espectadores, o.pantallas)
+	case o.espectadores == 1 && o.cuentas < o.pantallas:
+		return fmt.Errorf("con %d cuentas, alguna de las %d pantallas quedaría sin cuentas", o.cuentas, o.pantallas)
+	}
+	return nil
+}
+
 // cuentasDe reparte las cuentas entre las pantallas: la pantalla i mira las cuentas i, i+P, i+2P…
+// Con -espectadores V, cada cuenta la miran V pantallas: el espectador j de la cuenta c es la
+// pantalla (c·V + j) mod P. Hace falta cuentas·V >= pantallas para que ninguna quede sin cuentas.
 func cuentasDe(pantalla int, o opciones) []int {
 	var cuentas []int
-	for c := pantalla; c < o.cuentas; c += o.pantallas {
-		cuentas = append(cuentas, c)
+	if o.espectadores <= 1 {
+		for c := pantalla; c < o.cuentas; c += o.pantallas {
+			cuentas = append(cuentas, c)
+		}
+		return cuentas
+	}
+	for c := 0; c < o.cuentas; c++ {
+		for j := 0; j < o.espectadores; j++ {
+			if (c*o.espectadores+j)%o.pantallas == pantalla {
+				cuentas = append(cuentas, c)
+				break
+			}
+		}
 	}
 	return cuentas
+}
+
+// principal dice si esta pantalla es el espectador 0 de la cuenta: solo sus entregas se clasifican
+// (nuevo, repetido, desordenado). Las de los demás espectadores se cuentan como copias.
+func principal(cuenta, pantalla int, o opciones) bool {
+	return o.espectadores <= 1 || (cuenta*o.espectadores)%o.pantallas == pantalla
 }

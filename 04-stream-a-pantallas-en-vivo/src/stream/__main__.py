@@ -13,7 +13,7 @@ import subprocess
 import sys
 import tomllib
 
-from . import config, contenedores, costos, medir, reporte
+from . import concurrencia, config, contenedores, costos, medir, reporte
 from .formato import entero
 
 IMAGEN = re.compile(r"^\s*image:\s*\S*?([\w.-]+):v?([\w.-]+)\s*$", re.MULTILINE)
@@ -42,25 +42,33 @@ def preparar() -> None:
     config.DATOS.mkdir(exist_ok=True)
 
 
+def _maquina() -> dict:
+    docker = contenedores.recursos_docker()
+    return {"sistema": f"{platform.system()} {platform.release()}", "cpu": _cpu(), "nucleos": os.cpu_count(),
+            "docker": contenedores.version_docker(), "docker_nucleos": docker["nucleos"],
+            "docker_memoria_gb": docker["memoria_gb"]}
+
+
 def medir_todo() -> None:
     p, rutas = config.parametros(), config.rutas()
-    print(f"2/4 Midiendo {len(rutas)} rutas, de a una (unos {(5 + 2 * p.cortes) * len(rutas)} minutos)")
-    docker = contenedores.recursos_docker()
+    cuantas = "1 ruta" if len(rutas) == 1 else f"{len(rutas)} rutas, de a una"
+    print(f"2/4 Midiendo {cuantas} (unos {(5 + 2 * p.cortes) * len(rutas)} minutos)")
     resultados = []
     for i, ruta in enumerate(rutas, 1):
         print(f"    {i}/{len(rutas)} {ruta.nombre}")
         resultados.append(medir.medir_ruta(ruta, p))
+    hoy = dt.date.today().isoformat()
+    resultados = [{**r, "fecha": hoy} for r in resultados]
     medicion = {
-        "fecha": dt.date.today().isoformat(), "rapido": p.rapido,
-        "maquina": {"sistema": f"{platform.system()} {platform.release()}", "cpu": _cpu(), "nucleos": os.cpu_count(),
-                    "docker": contenedores.version_docker(), "docker_nucleos": docker["nucleos"],
-                    "docker_memoria_gb": docker["memoria_gb"]},
+        "fecha": hoy, "rapido": p.rapido,
+        "maquina": _maquina(),
         "parametros": {"tasa": p.tasa, "tasa_simulada": p.tasa_simulada, "emisores": p.emisores,
-                       "cuentas": p.cuentas, "pantallas": p.pantallas, "bytes": p.bytes,
+                       "cuentas": p.cuentas, "pantallas": p.pantallas, "espectadores": p.espectadores, "bytes": p.bytes,
                        "p99_max_ms": p.p99_max_ms, "cortes": p.cortes, "sesion_ms": p.sesion_ms},
         "versiones": _versiones(), "rutas": resultados,
     }
     medicion["rutas"] = combinar(_anterior(medicion), resultados, [r.id for r in config.rutas(todas=True)])
+    medicion["fecha"] = fecha_principal(medicion["rutas"])
     config.MEDICION.write_text(json.dumps(medicion, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
@@ -70,7 +78,13 @@ def _anterior(medicion: dict) -> list[dict]:
         return []
     guardada = json.loads(config.MEDICION.read_text(encoding="utf-8"))
     iguales = guardada.get("parametros") == medicion["parametros"] and guardada.get("rapido") == medicion["rapido"]
-    return guardada["rutas"] if iguales else []
+    # Cada ruta conserva el día en que se midió; las de una medición anterior a este campo, el de esa medición.
+    return [{"fecha": guardada["fecha"], **r} for r in guardada["rutas"]] if iguales else []
+
+
+def fecha_principal(rutas: list[dict]) -> str:
+    """El día en que se midió la mayoría de las rutas. Las demás se nombran aparte en el reporte."""
+    return statistics.mode(sorted(r["fecha"] for r in rutas))
 
 
 def combinar(anteriores: list[dict], nuevas: list[dict], orden: list[str]) -> list[dict]:
@@ -135,13 +149,34 @@ def costos_locales() -> None:
     print(f"Guardado en {config.COSTOS_LOCALES.relative_to(config.RAIZ)} (no se sube)")
 
 
+def _con_concurrencia(medicion: dict) -> dict:
+    """La medición más lo que dejó `make concurrencia`, si se corrió."""
+    if not config.CONCURRENCIA.exists():
+        return medicion
+    return {**medicion, "concurrencia": json.loads(config.CONCURRENCIA.read_text(encoding="utf-8"))}
+
+
 def escribir_reporte() -> None:
     print("4/4 Escribiendo el reporte")
-    medicion = _cargar_medicion()
+    medicion = _con_concurrencia(_cargar_medicion())
     config.RESULTADOS.write_text(reporte.markdown(medicion), encoding="utf-8")
     config.TABLAS.write_text(reporte.tablas(medicion), encoding="utf-8")
     print("\n" + reporte.resumen(medicion))
-    print(f"\nReporte completo en {config.RESULTADOS.relative_to(config.RAIZ)}")
+    print(f"Reporte completo en {config.RESULTADOS.relative_to(config.RAIZ)}")
+
+
+def medir_concurrencia() -> None:
+    concurrencia.correr(_maquina())
+    # Las tablas de concurrencia van al mismo reporte que las de make demo, que necesita su medición.
+    if not config.CONCURRENCIA.exists():
+        return
+    if not config.MEDICION.exists():
+        print("Para llevar estas tablas a docs/resultados.md corre make demo: el reporte parte de esa medición.")
+        return
+    medicion = _con_concurrencia(_cargar_medicion())
+    config.RESULTADOS.write_text(reporte.markdown(medicion), encoding="utf-8")
+    config.TABLAS.write_text(reporte.tablas(medicion), encoding="utf-8")
+    print(f"Tablas en {config.RESULTADOS.relative_to(config.RAIZ)}")
 
 
 def destruir() -> None:
@@ -152,7 +187,7 @@ def destruir() -> None:
 
 
 PASOS = {"preparar": preparar, "medir": medir_todo, "costos": calcular_costos, "reporte": escribir_reporte,
-         "local": costos_locales, "destruir": destruir}
+         "local": costos_locales, "concurrencia": medir_concurrencia, "destruir": destruir}
 
 
 def main() -> int:

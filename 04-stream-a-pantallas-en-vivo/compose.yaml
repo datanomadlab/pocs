@@ -113,17 +113,25 @@ services:
   # --- Carga y medición (se corren con `docker compose run`) ---------------------------------
   generador:
     profiles: [herramientas]
-    image: stream-a-pantallas-go   # la construye consumidor-go: make setup
+    image: stream-a-pantallas-go   # la construyen make demo y make concurrencia
     pull_policy: never
     entrypoint: generador
     cpus: 2
 
   sonda:
     profiles: [herramientas]
-    image: stream-a-pantallas-go   # la construye consumidor-go: make setup
+    image: stream-a-pantallas-go   # la construyen make demo y make concurrencia
     pull_policy: never
     entrypoint: sonda
     cpus: 2
+
+  # Prototipo que mide cuánto cuesta enriquecer un evento antes de entregarlo. Un hilo, un núcleo.
+  decorador:
+    profiles: [herramientas]
+    image: stream-a-pantallas-go   # la construyen make demo y make concurrencia
+    pull_policy: never
+    entrypoint: decorador
+    cpus: 1
 
 volumes:
   estado:

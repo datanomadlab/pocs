@@ -23,7 +23,7 @@ func conectarMQTT(o opciones, r *registro, lista func()) {
 		opciones := mqtt.NewClientOptions().AddBroker(o.destino).SetClientID(fmt.Sprintf("pantalla-%d", i)).
 			SetCleanSession(false).SetAutoReconnect(true).SetConnectRetry(true).
 			SetConnectRetryInterval(pausaReconexion).SetMaxReconnectInterval(pausaReconexion).
-			SetDefaultPublishHandler(func(_ mqtt.Client, m mqtt.Message) { r.recibir(m.Payload()) }).
+			SetDefaultPublishHandler(func(_ mqtt.Client, m mqtt.Message) { r.recibir(m.Payload(), i) }).
 			SetOnConnectHandler(func(c mqtt.Client) {
 				if conectada.Swap(true) {
 					r.reconexiones.Add(1)

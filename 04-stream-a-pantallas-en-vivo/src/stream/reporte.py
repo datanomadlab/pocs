@@ -5,8 +5,8 @@ digan siempre lo mismo. Cada celda sale de una de las funciones de abajo, que la
 """
 from __future__ import annotations
 
-from . import analisis, config
-from .formato import decimal, entero, fecha_larga, latencia, por_segundo, segundos, usd_corto
+from . import analisis, config, reporte_concurrencia
+from .formato import O_MAS, decimal, entero, fecha_larga, latencia, por_segundo, segundos, usd_corto
 
 # El resumen se graba en el GIF de la demo: a este ancho se lee en un post sin hacer zoom.
 ANCHO_RESUMEN = 68
@@ -32,7 +32,7 @@ def aguanta(ruta: dict) -> str:
         return SIN_MEDIR
     if rampa["aguanta_hasta"] == 0:
         return "no cumple"
-    return ("≥ " if rampa["llego_al_tope"] else "") + por_segundo(rampa["aguanta_hasta"])
+    return (O_MAS if rampa["llego_al_tope"] else "") + por_segundo(rampa["aguanta_hasta"])
 
 
 def nucleos(ruta: dict) -> str:
@@ -107,6 +107,16 @@ def _escenario_medido(medicion: dict) -> dict:
     return next((e for e in escenarios if e["eventos_s"] == medicion["parametros"]["tasa"]), escenarios[0])
 
 
+def _medidas_otro_dia(medicion: dict) -> str:
+    """Las rutas que se volvieron a medir un día distinto al del resto, para que el reporte lo diga."""
+    por_fecha: dict[str, list[str]] = {}
+    for r in medicion["rutas"]:
+        if r.get("fecha", medicion["fecha"]) != medicion["fecha"]:
+            por_fecha.setdefault(r["fecha"], []).append(r["corto"])
+    return "".join(f" {' y '.join(cortos)} se volvió a medir el {fecha_larga(fecha)}."
+                   for fecha, cortos in sorted(por_fecha.items()))
+
+
 def _nota_sin_comprimir() -> str:
     """Las rutas donde el productor de Kafka escribe sin comprimir, para que la tabla lo diga."""
     rutas = [r.corto for r in config.rutas(todas=True) if r.sin_comprimir]
@@ -119,7 +129,7 @@ def armar_tablas(medicion: dict) -> list[dict]:
     medidas = [r for r in rutas if r["etiqueta"] == "medido"]
     simuladas = [r for r in rutas if r["etiqueta"] == "simulado"]
     donde = (f"Medido el {fecha_larga(medicion['fecha'])} en {medicion['maquina']['cpu']}, con Docker, "
-             f"cada pieza limitada a 2 núcleos y 2 GB.")
+             f"cada pieza limitada a 2 núcleos y 2 GB.{_medidas_otro_dia(medicion)}")
     tablas = []
     if medidas:
         tablas.append({
@@ -188,7 +198,7 @@ def armar_tablas(medicion: dict) -> list[dict]:
                      "al mes). Cada columna supone un costo distinto de la hora caída. Con signo +, el "
                      "camino es más caro: conviene solo si evita al menos esas horas de caída al mes. Con signo −, es "
                      "más barato: sigue conviniendo aunque sume hasta esas horas.")})
-    return tablas
+    return tablas + reporte_concurrencia.armar_tablas(medicion.get("concurrencia"))
 
 
 def _estable(rutas: list[dict]) -> str:
@@ -236,13 +246,16 @@ def markdown(medicion: dict) -> str:
            "> Archivo generado por `make demo`. No lo edites a mano: vuelve a correr la demo.", "",
            f"- **Máquina:** {maq['sistema']}, {maq['cpu']}, {maq['nucleos']} núcleos. "
            f"Docker {maq['docker']} con {maq['docker_nucleos']} núcleos y {decimal(maq['docker_memoria_gb'])} GB.",
-           f"- **Fecha de la medición:** {medicion['fecha']}.",
+           f"- **Fecha de la medición:** {medicion['fecha']}.{_medidas_otro_dia(medicion)}",
            f"- **Carga:** {por_segundo(p['tasa'])} (menos en las rutas simuladas: ver su tabla), "
            f"{entero(p['emisores'])} emisores en {entero(p['cuentas'])} cuentas, {entero(p['pantallas'])} pantallas, "
            f"eventos de {p['bytes']} bytes.",
            "- **Versiones:** " + ", ".join(f"{k} {v}" for k, v in medicion["versiones"].items()) + ".",
            "- **Etiquetas:** medido (corrió en esta máquina), simulado (contra un emulador: comprueba que funciona, "
            "no cuánto tarda ni cuánto cobra) y modelo (proyección con los supuestos de `escenario.toml`).", ""]
+    if medicion.get("concurrencia"):
+        out += ["- **Concurrencia:** las tablas con varias pantallas por cuenta y la de enriquecer un evento salen de "
+                f"`make concurrencia`, que se midió aparte el {fecha_larga(medicion['concurrencia']['fecha'])}.", ""]
     if medicion.get("rapido"):
         out += ["> **Corrida rápida (RAPIDO=1):** fases acortadas para probar que todo levanta. Estas cifras no se publican.", ""]
     for t in armar_tablas(medicion):
@@ -275,10 +288,11 @@ def resumen(medicion: dict) -> str:
     p = medicion["parametros"]
 
     def fila(nombre: str, a: str, b: str, c: str, d: str, etiqueta: str) -> str:
-        cuerpo = f"{nombre:<{config.LARGO_CORTO + 1}}{a:<7}{b:<11}{c:<10}{d}"
+        cuerpo = f"{nombre:<{config.LARGO_CORTO + 1}}{a:<7}{b:<12}{c:<10}{d}"
         return f"{cuerpo:<{ANCHO_RESUMEN - len(etiqueta)}}{etiqueta}".rstrip()
 
-    out = [f"Resumen · {por_segundo(p['tasa'])}, {entero(p['pantallas'])} pantallas, 2 núcleos por pieza", "",
+    # Sin líneas en blanco de más: el resumen completo tiene que caber en un cuadro de la demo.
+    out = [f"Resumen · {por_segundo(p['tasa'])}, {entero(p['pantallas'])} pantallas, 2 núcleos por pieza",
            fila("", "", "", "al matar la entrega", "", ""),
            fila("Ruta", "p99", "aguanta", "congela", "pierde", "")]
     for r in rutas:
@@ -288,8 +302,8 @@ def resumen(medicion: dict) -> str:
         if not r.get("cortes"):
             out.append(fila(r["corto"], p99(r), "—", "no terminó", "", r["etiqueta"]))
             continue
-        out.append(fila(r["corto"], p99(r), aguanta(r) if "rampa" in r else "—", congelada(r), no_llegaron(r),
-                        r["etiqueta"]))
+        tope = aguanta(r) if "rampa" in r else "—"
+        out.append(fila(r["corto"], p99(r), tope, congelada(r), no_llegaron(r), r["etiqueta"]))
     if medicion.get("costos"):
         medido = _escenario_medido(medicion)
         titulo = f"Costo al mes, {medido['detalle']}"

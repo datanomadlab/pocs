@@ -11,10 +11,14 @@ def perdidos(confirmados: int, unicos: int) -> int:
     return max(confirmados - unicos, 0)
 
 
+def emitio_todo(fase: dict, tasa: int, segundos: int) -> bool:
+    """El generador pudo emitir la tasa pedida: si no, la fase no dice nada de la pieza medida."""
+    return fase["confirmados"] >= 0.99 * tasa * segundos and fase["atraso_generador_ms"] < 1_000
+
+
 def aguanta(fase: dict, tasa: int, segundos: int, p99_max_ms: int) -> bool:
     """Una ruta aguanta una tasa si el generador pudo emitirla, no se perdió nada y el p99 cumple."""
-    emitio_todo = fase["confirmados"] >= 0.99 * tasa * segundos and fase["atraso_generador_ms"] < 1_000
-    return emitio_todo and fase["perdidos"] == 0 and fase["latencia_ms"]["p99"] <= p99_max_ms
+    return emitio_todo(fase, tasa, segundos) and fase["perdidos"] == 0 and fase["latencia_ms"]["p99"] <= p99_max_ms
 
 
 def corte(serie: list[list[int]], corte_ms: float, fin_carga_ms: float, tramo_ms: int, p99_max_ms: int) -> dict:

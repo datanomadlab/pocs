@@ -37,7 +37,7 @@ func conectarCentrifugo(o opciones, r *registro, lista func()) {
 			sub.OnError(func(e centrifuge.SubscriptionErrorEvent) {
 				fmt.Fprintf(os.Stderr, "Error en la suscripción a %s: %v\n", evento.Canal(cuenta), e.Error)
 			})
-			sub.OnPublication(func(e centrifuge.PublicationEvent) { r.recibir(e.Data) })
+			sub.OnPublication(func(e centrifuge.PublicationEvent) { r.recibir(e.Data, i) })
 			sub.OnSubscribed(func(e centrifuge.SubscribedEvent) {
 				// Volvió, pidió recuperar y Centrifugo no pudo: hay eventos que esta pantalla no verá.
 				if e.WasRecovering && !e.Recovered {

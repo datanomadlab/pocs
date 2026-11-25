@@ -26,6 +26,7 @@ type emisor struct {
 // registro lleva la cuenta de todo lo que las pantallas recibieron.
 type registro struct {
 	corrida      string
+	o            opciones
 	mu           sync.Mutex
 	emisores     map[int]*emisor
 	total, tramo *hdrhistogram.Histogram
@@ -34,6 +35,7 @@ type registro struct {
 
 	unicos, duplicados, desordenados, ajenos atomic.Int64
 	reconexiones, sinRecuperar               atomic.Int64
+	copias                                   atomic.Int64
 }
 
 func nuevoRegistro(corrida string) *registro {
@@ -43,7 +45,10 @@ func nuevoRegistro(corrida string) *registro {
 
 // recibir clasifica un evento: nuevo, duplicado (ya había llegado) o desordenado (nuevo, pero
 // llegó después de uno posterior del mismo emisor).
-func (r *registro) recibir(cuerpo []byte) {
+//
+// Cuando una cuenta la miran varias pantallas, solo se clasifica lo que recibe la principal; lo que
+// reciben las demás se cuenta como copia y entra a la latencia.
+func (r *registro) recibir(cuerpo []byte, pantalla int) {
 	var e evento.Evento
 	if err := json.Unmarshal(cuerpo, &e); err != nil || e.Corrida != r.corrida {
 		r.ajenos.Add(1)
@@ -53,6 +58,12 @@ func (r *registro) recibir(cuerpo []byte) {
 
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	if !principal(e.Cuenta, pantalla, r.o) {
+		r.copias.Add(1)
+		r.total.RecordValue(latencia)
+		r.tramo.RecordValue(latencia)
+		return
+	}
 	em := r.emisores[e.Emisor]
 	if em == nil {
 		em = &emisor{ultimo: -1}
@@ -97,7 +108,7 @@ func (r *registro) resumen() map[string]any {
 	ms := func(q float64) float64 { return float64(r.total.ValueAtQuantile(q)) / 1000 }
 	return map[string]any{
 		"unicos": r.unicos.Load(), "duplicados": r.duplicados.Load(), "desordenados": r.desordenados.Load(),
-		"ajenos": r.ajenos.Load(), "reconexiones": r.reconexiones.Load(), "sin_recuperar": r.sinRecuperar.Load(),
+		"ajenos": r.ajenos.Load(), "copias": r.copias.Load(), "reconexiones": r.reconexiones.Load(), "sin_recuperar": r.sinRecuperar.Load(),
 		"latencia_ms": map[string]float64{"p50": ms(50), "p95": ms(95), "p99": ms(99), "max": float64(r.total.Max()) / 1000},
 		"tramo_ms":    tramoSerie.Milliseconds(), "serie": r.serie,
 	}

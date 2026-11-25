@@ -9,6 +9,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parents[2]
 DATOS = RAIZ / "data"
 MEDICION = DATOS / "medicion.json"
+CONCURRENCIA = DATOS / "concurrencia.json"   # lo escribe make concurrencia
 RESULTADOS = RAIZ / "docs" / "resultados.md"
 TABLAS = RAIZ / "docs" / "tablas.toml"
 RUTAS = RAIZ / "rutas.toml"
@@ -55,7 +56,7 @@ CONFIGURACION = {"centrifugo": ["servicios/centrifugo/{transporte}.json"],
 @dataclass(frozen=True)
 class Ruta:
     id: str
-    corto: str            # nombre para el resumen de la terminal, de 24 caracteres como máximo
+    corto: str            # nombre para el resumen de la terminal, de 23 caracteres como máximo
     transporte: str
     entrega: str
     nombre: str
@@ -81,6 +82,8 @@ class Parametros:
     cortes: int
     sesion_ms: str
     rapido: bool
+    # Pantallas que miran cada cuenta. Con 1, cada evento llega a una sola pantalla.
+    espectadores: int = 1
 
     @property
     def segundos_nominal(self) -> int:
@@ -119,7 +122,8 @@ def parametros() -> Parametros:
         pantallas=_entero("PANTALLAS", 100), bytes=_entero("BYTES", 300),
         p99_max_ms=_entero("P99_MAX_MS", 1_000), cortes=_entero("CORTES", 2),
         sesion_ms=os.environ.get("SESION_MS", "").strip(),
-        rapido=os.environ.get("RAPIDO", "").strip() == "1")
+        rapido=os.environ.get("RAPIDO", "").strip() == "1",
+        espectadores=_entero("ESPECTADORES", 1))
 
 
 def rutas(todas: bool = False) -> list[Ruta]:

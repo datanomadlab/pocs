@@ -24,11 +24,11 @@ func conectarSSE(o opciones, r *registro, lista func()) {
 	cliente := &http.Client{Transport: &http.Transport{DisableCompression: true}}
 	var abiertos, flujos atomic.Int64
 	var ultimoEvento atomic.Int64
-	recibir := func(cuerpo []byte) {
-		ultimoEvento.Store(time.Now().UnixNano())
-		r.recibir(cuerpo)
-	}
 	for i := 0; i < o.pantallas; i++ {
+		recibir := func(cuerpo []byte) {
+			ultimoEvento.Store(time.Now().UnixNano())
+			r.recibir(cuerpo, i)
+		}
 		for _, cuenta := range cuentasDe(i, o) {
 			flujos.Add(1)
 			go func(url string) {

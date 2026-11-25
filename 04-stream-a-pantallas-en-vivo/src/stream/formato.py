@@ -1,6 +1,10 @@
 """Cómo se escriben los números en todo lo que imprime o publica el experimento: formato español."""
 from __future__ import annotations
 
+# «Este valor o más»: la pieza aguantó hasta donde llegó la prueba. Va «>=» y no «≥» porque la fuente con
+# que se dibujan las tablas y se graba la demo no trae ese símbolo, y todas las salidas dicen lo mismo.
+O_MAS = ">= "
+
 MESES = ("enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre",
          "octubre", "noviembre", "diciembre")
 

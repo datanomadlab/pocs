@@ -1,7 +1,7 @@
 import pytest
 
 from stream import config
-from stream.__main__ import _versiones, combinar, nucleos_medidos
+from stream.__main__ import _versiones, combinar, fecha_principal, nucleos_medidos
 
 
 def test_rutas_del_archivo_son_validas():
@@ -73,3 +73,9 @@ def test_rutas_todas_ignora_el_filtro(monkeypatch):
 def test_escribir_sin_comprimir_solo_se_pide_en_rutas_sobre_kafka():
     assert all(r.transporte == "redpanda" for r in config.rutas() if r.sin_comprimir)
     assert any(r.sin_comprimir for r in config.rutas())
+
+
+def test_la_fecha_de_la_medicion_es_la_de_la_mayoria_de_las_rutas():
+    rutas = [{"id": "a", "fecha": "2026-11-21"}, {"id": "b", "fecha": "2026-11-21"}, {"id": "c", "fecha": "2026-11-25"}]
+    assert fecha_principal(rutas) == "2026-11-21"
+    assert fecha_principal(rutas[2:]) == "2026-11-25"

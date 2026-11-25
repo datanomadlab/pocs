@@ -23,7 +23,7 @@ replicas_entrega = 2
 #
 # Los supuestos que más mueven el resultado, de mayor a menor a 10.000 eventos por segundo:
 #   1. [kinesis] fan_out: unos USD 800 de la línea base. Sin él, la lectura de Kinesis es gratis.
-#   2. [flink] mb_s_por_kpu: unos USD 500 si una KPU rinde el doble o la mitad.
+#   2. [flink] mb_s_por_kpu: USD 1.009 con el supuesto, USD 1.776 si una KPU rinde la mitad, USD 753 si rinde el doble.
 #   3. [transferencia] fraccion_entre_zonas: unos USD 420 en los caminos con brokers.
 # Y dos que no están en el modelo: se escribe un evento por registro o mensaje (agregar varios por
 # registro baja la escritura de Kinesis igual que el empaquetado baja SQS), y los datos viajan sin

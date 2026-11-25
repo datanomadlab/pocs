@@ -2,9 +2,9 @@
 
 > **Pregunta:** ¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo?
 >
-> **Veredicto:** pendiente.
+> **Veredicto:** Depende. Con carga estable las herramientas listas cumplen; al matar la pieza que entrega, congelan la pantalla más de 10 segundos o pierden eventos. La única que volvió de inmediato sin perder nada necesita una pieza más, Redis, y con ella no aguantó el doble de la carga.
 
-![Demo: make demo de punta a punta y make destroy](docs/demo.gif)
+![Demo: make demo midiendo de nuevo una ruta y el resumen de las 13](docs/demo.gif)
 
 ![Arquitectura del experimento](docs/arquitectura.png)
 
@@ -80,7 +80,7 @@ No hay dataset: la carga es sintética y la genera el propio experimento, porque
 - Kinesis y SQS son emuladores. Dicen si la ruta funciona, qué hace el código del consumidor frente a un corte y cuánto código pide; no dicen cuánto tarda ni cuánto aguanta el servicio real.
 - Con 100.000 emisores, cada uno emite cada 10 segundos: el orden por emisor solo queda a prueba para desórdenes más largos que eso, y en las rutas simuladas no queda a prueba.
 - Dos cortes por ruta. Lo que pasa al matar un consumidor depende de en qué estaba en ese instante.
-- 100 pantallas que se reconectan a los 100 ms. Con miles de conexiones, o con pantallas que tardan más en volver, el reparto pesa más y la pérdida en el corte crece.
+- 100 pantallas que se reconectan a los 100 ms. Con miles de conexiones, o con pantallas que tardan más en volver, el reparto pesa más y la pérdida en el corte crece. La prueba con miles de pantallas y varias por cuenta está aparte, en [docs/concurrencia.md](docs/concurrencia.md) (`make concurrencia`).
 - Redpanda corre en modo de desarrollo, sin `fsync`. Sirve para comparar rutas en la misma máquina, no como cifra de un broker durable.
 - Zilla y EMQX se midieron solo sobre Redpanda y no están en el modelo de costos. Con Zilla, la sonda espera a que termine de llegar el histórico antes de medir, y abre un flujo SSE por cuenta: 10 por pantalla.
 - Flink no se midió: su costo en el modelo depende de un supuesto de capacidad por KPU.
@@ -94,7 +94,9 @@ Necesitas [uv](https://docs.astral.sh/uv/) y Docker con al menos 8 núcleos y 8 
 make setup    # instala dependencias
 make demo     # construye las imágenes, mide cada ruta, calcula costos y muestra el resumen
 make costos   # recalcula solo el modelo de costos sobre la última medición
+make concurrencia  # aparte: miles de pantallas, varias por cuenta (cerca de media hora)
 make test     # pruebas
+make test-go  # las pruebas de las piezas en Go, dentro de Docker
 make destroy  # baja los contenedores y borra volúmenes, imágenes propias y data/
 ```
 
@@ -116,6 +118,8 @@ Para correr el modelo de costos con tus cifras sin subirlas, copia `escenario.to
 | [servicios/zilla](servicios/zilla) | La configuración de Zilla: de un tópico de Kafka a un flujo SSE por cuenta |
 | [servicios/emqx](servicios/emqx) | La configuración de EMQX: la lectura de Kafka y la regla que publica en el tema de cada cuenta |
 | [src/stream/medir.py](src/stream/medir.py) | Las tres pruebas de cada ruta |
+| [src/stream/concurrencia.py](src/stream/concurrencia.py) | La matriz de concurrencia: varias pantallas por cuenta, con carga, rampa y corte |
+| [servicios/go/internal/decorador](servicios/go/internal/decorador) | Prototipo para medir cuánto cuesta enriquecer un evento antes de entregarlo |
 | [src/stream/analisis.py](src/stream/analisis.py) | Qué pasó en un corte, si una ruta aguanta una tasa y cuántas líneas de código pide |
 | [src/stream/costos.py](src/stream/costos.py) | El modelo de costos, en funciones puras |
 | [escenario.toml](escenario.toml) | Precios con su fuente y fecha, y supuestos marcados |
@@ -123,24 +127,24 @@ Para correr el modelo de costos con tus cifras sin subirlas, copia `escenario.to
 
 ## Resultados
 
-Todos los números salen de [docs/resultados.md](docs/resultados.md), que escribe `make demo`. Medido el 21 de noviembre de 2026 en un Apple M4 Pro, con Docker (12 núcleos y 7,7 GB) y cada pieza limitada a 2 núcleos y 2 GB. La ruta de Kinesis se volvió a medir aparte el mismo día, a 200 eventos por segundo. Las rutas con Zilla y EMQX se sumaron después y se midieron aparte, también el mismo día.
+Todos los números salen de [docs/resultados.md](docs/resultados.md), que escribe `make demo`. Medido el 21 de noviembre de 2026 en un Apple M4 Pro, con Docker (12 núcleos y 7,7 GB) y cada pieza limitada a 2 núcleos y 2 GB. La ruta de Kinesis se volvió a medir aparte el mismo día, a 200 eventos por segundo. Las rutas con Zilla y EMQX se sumaron después y se midieron aparte, también el mismo día. NATS + Centrifugo con Redis se volvió a medir el 25 de noviembre de 2026, al grabar la demo: sus cifras son las de esa corrida. La prueba con varias pantallas por cuenta se midió ese mismo día; sus tablas las agrega `make concurrencia` al reporte que ya dejó `make demo`.
 
 ### Con carga estable, a 10.000 eventos por segundo
 
 | Ruta | p99 en pantalla (medido) | Aguanta hasta (medido) | Núcleos (medido) | Código propio (medido) |
 |---|---|---|---|---|
-| Redpanda + Go | 16 ms | ≥ 80.000/s | 0,10 + 0,20 | 135 líneas |
-| Redpanda + Go, 6 s | 16 ms | ≥ 80.000/s | 0,12 + 0,25 | 135 líneas |
-| Redpanda + Node | 20 ms | ≥ 80.000/s | 0,09 + 0,26 | 88 líneas |
-| Redpanda + Centrifugo | 17 ms | ≥ 80.000/s | 0,10 + 0,19 | 28 de config. |
+| Redpanda + Go | 16 ms | >= 80.000/s | 0,10 + 0,20 | 135 líneas |
+| Redpanda + Go, 6 s | 16 ms | >= 80.000/s | 0,12 + 0,25 | 135 líneas |
+| Redpanda + Node | 20 ms | >= 80.000/s | 0,09 + 0,26 | 88 líneas |
+| Redpanda + Centrifugo | 17 ms | >= 80.000/s | 0,10 + 0,19 | 28 de config. |
 | Redpanda + Zilla | 22 ms | 20.000/s | 0,08 + 0,64 | 57 de config. |
 | Redpanda + EMQX | 18 ms | 40.000/s | 0,12 + 0,57 | 27 de config. |
-| NATS + Go | 3,7 ms | ≥ 80.000/s | 0,31 + 0,26 | 138 líneas |
+| NATS + Go | 3,7 ms | >= 80.000/s | 0,31 + 0,26 | 138 líneas |
 | NATS + Node | 3,3 ms | 40.000/s | 0,31 + 0,25 | 85 líneas |
-| NATS + Centrifugo | 3,9 ms | ≥ 80.000/s | 0,25 + 0,22 | 29 de config. |
-| NATS + Centrifugo/Redis | 8,8 ms | 10.000/s | 0,45 + 0,75 | 44 de config. |
+| NATS + Centrifugo | 3,9 ms | >= 80.000/s | 0,25 + 0,22 | 29 de config. |
+| NATS + Centrifugo/Redis | 9,4 ms | 10.000/s | 0,45 + 0,75 | 44 de config. |
 
-Aguanta: la mayor tasa con p99 bajo 1 segundo y sin pérdida, en escalones de 12 segundos; la rampa llega hasta 80.000/s. Núcleos: los del transporte más los de la entrega; en la ruta con Redis no cuentan los de Redis, que corre aparte con 1 núcleo y 1 GB. «6 s» es el tiempo de sesión del grupo de Kafka; de fábrica son 45 s en el cliente de Go y 30 s en el de Node. El código propio y la configuración de las herramientas no hacen lo mismo: el consumidor propio no guarda historial ni recupera lo que una pantalla se perdió. En la ruta con Zilla el productor escribe a Kafka sin comprimir, porque Zilla no entregó ningún evento de los lotes comprimidos con snappy.
+Aguanta: la mayor tasa con p99 bajo 1 segundo y sin pérdida, en escalones de 12 segundos; la rampa llega hasta 80.000/s, y `>=` marca a las que aguantaron hasta ahí. Núcleos: los del transporte más los de la entrega; en la ruta con Redis no cuentan los de Redis, que corre aparte con 1 núcleo y 1 GB. «6 s» es el tiempo de sesión del grupo de Kafka; de fábrica son 45 s en el cliente de Go y 30 s en el de Node. El código propio y la configuración de las herramientas no hacen lo mismo: el consumidor propio no guarda historial ni recupera lo que una pantalla se perdió. En la ruta con Zilla el productor escribe a Kafka sin comprimir, porque Zilla no entregó ningún evento de los lotes comprimidos con snappy.
 
 ### Al matar la pieza que entrega
 
@@ -155,9 +159,33 @@ Aguanta: la mayor tasa con p99 bajo 1 segundo y sin pérdida, en escalones de 12
 | NATS + Go | < 0,4 s | 30 s | 2.121 | 0 | 100 |
 | NATS + Node | 0,3 s | 30 s | 3.159 | 1 | 98 |
 | NATS + Centrifugo | < 0,4 s | 30 s | 4.016 | 1 | 96 |
-| NATS + Centrifugo/Redis | < 0,4 s | 30 s | 0 | 1 | 80 |
+| NATS + Centrifugo/Redis | < 0,4 s | 30 s | 0 | 1 | 73 |
 
 Dos cortes por ruta; cada columna muestra su peor valor. Congelada: tiempo sin que llegue nada a la pantalla. Atraso máx.: lo que tardó el evento más demorado. No llegaron: eventos que ninguna pantalla recibió hasta 20 segundos después de terminar la carga. Sin orden: eventos que llegaron después de uno posterior del mismo emisor; como cada emisor emite cada 10 segundos, solo se ve un desorden mayor que eso. Las pantallas de la sonda se reconectan a los 100 ms, que es un caso favorable.
+
+### Con miles de pantallas, varias por cuenta
+
+En las tablas de arriba cada cuenta la mira una sola pantalla. Aquí la miran entre 10 y 50, así que la pieza de entrega carga con las entregas que salen (eventos por pantallas que miran cada cuenta) y no con los eventos que entran. Transporte NATS, una instancia de cada pieza con 2 núcleos, eventos de 1.000 bytes. El detalle y los límites están en [docs/concurrencia.md](docs/concurrencia.md).
+
+Hasta cuántas entregas por segundo aguantó cada pieza (`>=`: aguantó hasta donde llegó la rampa; «entrega el N %»: no aguantó ni la carga del escenario):
+
+| Escenario | Entregas/s | Centrifugo (medido) | Centrifugo/Redis (medido) | Go (medido) |
+|---|---|---|---|---|
+| 1.000 pantallas, 10 por cuenta | 3.330 | >= 26.640/s | >= 26.640/s | >= 26.640/s |
+| 2.000 pantallas, 20 por cuenta | 33.340 | 66.680/s | 66.680/s | >= 266.720/s |
+| 5.000 pantallas, 50 por cuenta | 83.350 | 83.350/s | 83.350/s | 333.400/s |
+| 5.000 pantallas, 25 por cuenta | 166.675 | entrega el 71 % | entrega el 80 % | 166.675/s |
+
+Los escenarios tienen, en orden, 10.000, 50.000, 50.000 y 200.000 emisores. Entregas que no llegaron a su pantalla al matar la pieza con todas conectadas, que reconectan a la vez:
+
+| Escenario | Entregas/s | Centrifugo (medido) | Centrifugo/Redis (medido) | Go (medido) |
+|---|---|---|---|---|
+| 1.000 pantallas, 10 por cuenta | 3.330 | 1,0 % | 0 | 0,6 % |
+| 2.000 pantallas, 20 por cuenta | 33.340 | 1,0 % | 0 | 0,6 % |
+| 5.000 pantallas, 50 por cuenta | 83.350 | 1,0 % | 0 | 0,7 % |
+| 5.000 pantallas, 25 por cuenta | 166.675 | ya no aguantaba | ya no aguantaba | 0,7 % |
+
+«Ya no aguantaba»: la pieza no entregaba todo antes del corte. Un corte por combinación. Los porcentajes son sobre las entregas esperadas en los 40 segundos de carga: el 1,0 % equivale a unos 0,4 segundos de entregas, y el 0,6 % a unos 0,25. Bajo su techo, todas volvieron a entregar en menos de 0,4 segundos.
 
 ### Las rutas sobre servicios de AWS, contra emuladores
 
@@ -188,7 +216,7 @@ Modelo, no una factura: precios por demanda de us-east-1 revisados el 21 de novi
 - **SQS FIFO** lleva un tema SNS FIFO que reparte a 3 colas. **Empaquetado** junta 10 eventos por mensaje, y entonces hace falta un consumidor propio que desarme el paquete.
 - **MSK** es Kafka administrado (brokers Express). **Redpanda** y **NATS** son 3 nodos propios, uno por zona; a 100.000/s su tamaño sale de la CPU medida en modo de desarrollo, que no es la de un broker durable.
 
-Los tres supuestos que más mueven el resultado a 10.000/s: usar enhanced fan-out en Kinesis (unos USD 800 de la línea base), la capacidad de Flink por KPU (unos USD 500 si rinde el doble o la mitad) y que 2 de cada 3 GB crucen de zona en los caminos con brokers (unos USD 420).
+Los tres supuestos que más mueven el resultado a 10.000/s: usar enhanced fan-out en Kinesis (unos USD 800 de la línea base), la capacidad de Flink por KPU (las aplicaciones cuestan USD 1.009 con el supuesto, USD 1.776 si una KPU rinde la mitad y USD 753 si rinde el doble) y que 2 de cada 3 GB crucen de zona en los caminos con brokers (unos USD 420).
 
 ### Cuántas horas caídas vale la diferencia, a 10.000 eventos por segundo
 
@@ -205,7 +233,7 @@ Contra la línea base (USD 2.428 al mes). Cada columna supone un costo distinto 
 
 | | |
 |---|---|
-| Horas invertidas | por completar |
+| Horas invertidas | 16 |
 
 Qué significa cada etiqueta:
 
@@ -220,6 +248,10 @@ Qué significa cada etiqueta:
 - **Volver rápido no es lo mismo que no perder.** Sobre NATS la pantalla vuelve en menos de medio segundo, pero entre 2.090 y 4.016 eventos, según la ruta y el corte, no llegaron a ninguna pantalla: el consumidor retoma antes de que las pantallas se reconecten, entrega al aire y confirma igual. Esa pérdida es del consumidor, no del transporte, y crece con la tasa y con lo que tarden las pantallas en volver. Además, los mensajes que estaban entregados sin confirmar vuelven 30 segundos después (el `AckWait` de fábrica de JetStream) y llegan fuera de orden.
 - **Con grupo de consumidores sobre Kafka no se perdió nada en los 10 cortes, y no es una garantía.** Son las rutas con consumidor propio, Centrifugo y EMQX. El grupo tarda al menos 5 segundos en reasignar las particiones y las pantallas alcanzan a volver antes. El consumidor retoma desde el último avance guardado y repite entre 7.000 y 34.900 eventos.
 - **Centrifugo con Redis fue la única ruta que volvió de inmediato sin perder nada**, porque las pantallas le piden el historial al reconectarse. En el corte Redis siguió vivo: lo que se mató fue Centrifugo. Esa configuración aguantó 10.000/s y no 20.000/s; no identifiqué si el límite es Centrifugo, Redis con su núcleo o el consumidor de NATS. Sin Redis, Centrifugo guarda el historial en su memoria y lo pierde al reiniciarse; al menos le avisa a la pantalla que no pudo recuperar.
+- **Con varias pantallas por cuenta, el techo llega por pantallas y no por emisores.** 50.000 emisores son 1.667 eventos por segundo, poco para cualquier pieza; con 50 pantallas por cuenta son 83.350 entregas por segundo. Una instancia de Centrifugo aguantó eso y falló al doble; con 20 pantallas por cuenta aguantó 66.680 y falló a 133.360. El consumidor propio en Go aguantó 333.400 con 50 pantallas por cuenta y no aguantó 333.350 con 25. Es un escalón de 12 segundos por combinación, en una sola corrida.
+- **El techo de Centrifugo no fue de CPU, y no quedó aislado.** A 83.350 entregas por segundo usaba 0,58 de sus 2 núcleos. En una repetición aparte de la carga de 133.360, que no queda guardada ni la repite `make concurrencia`, el log en detalle de Centrifugo mostró 1.246 conexiones cerradas por error al escribirles y ninguna por cola llena. Puede ser el servidor escribiendo o la librería cliente de la sonda leyendo, que no es la misma que usa contra el consumidor en Go: es un techo provisorio.
+- **Con hasta 5.000 pantallas reconectando a la vez, Centrifugo con Redis no perdió nada en sus 3 cortes bajo el techo.** Es un corte por escenario, y un corte varía mucho de otro. Sin Redis dejó sin llegar el 1,0 % de las entregas, y el consumidor en Go entre el 0,6 % y el 0,7 %. Todas volvieron en menos de 0,4 segundos.
+- **Enriquecer un evento cuesta poco frente a entregarlo.** Un núcleo traduce las lecturas y evalúa 1.000 reglas por cuenta para 5 destinos a 38.500 eventos por segundo. Entregar 6.667 eventos por segundo a 25 pantallas por cuenta le pidió 1,47 núcleos al consumidor en Go. Es un prototipo de un solo hilo: no dice cómo se reparte ese trabajo entre réplicas.
 - **EMQX se comportó como Centrifugo sobre Kafka, con otro protocolo.** Son 27 líneas de configuración y la pantalla habla MQTT sobre WebSocket. Aguantó 40.000/s; a 80.000 ocupó sus 2 núcleos y el p99 pasó de 1 segundo. En el corte congeló 29 y 27 segundos y no perdió nada: otra vez el grupo de Kafka. La página de su fuente de Kafka no documenta una opción para el tiempo de sesión. Su licencia (BSL 1.1 desde la versión 5.9) deja usar gratis un solo nodo; un clúster pide licencia comercial.
 - **Zilla trae la idea que faltaba y en el corte no alcanzó.** No usa grupo de consumidores: lee el tópico a una caché y cada pantalla le dice desde qué evento seguir. En un corte no perdió nada, con 8 segundos de congelamiento y 56 para ponerse al día. En el otro congeló 19 segundos y 28.669 eventos no llegaron: de los 1.000 flujos SSE, 44 no volvieron a abrirse en los 85 segundos siguientes, y la pérdida coincide con lo que esos flujos habrían recibido. La sonda, igual que `EventSource` en el navegador, no corta la espera de una respuesta.
 - **Zilla pone tres condiciones que no están a la vista.** No entregó ningún evento de los lotes comprimidos con snappy, que es como escriben de fábrica el generador y muchos clientes de Kafka, y no registró ningún error. Una pantalla nueva recibe primero todo lo que la caché tiene de su cuenta, y por SSE no hay opción para partir en vivo: con un tópico de eventos, eso es la retención completa. Y aguantó 20.000/s, no 40.000, con 1,1 GB de memoria contra 365 MB de EMQX.
@@ -237,7 +269,10 @@ Qué significa cada etiqueta:
 - [ ] Repetir con menos emisores (por ejemplo 1.000), para que cada uno emita varias veces por segundo y el orden quede a prueba de verdad, también en SQS FIFO.
 - [ ] Medir la CPU de Redis y encontrar qué limita a Centrifugo con Redis sobre 10.000/s. Probarlo también sobre Redpanda y con dos nodos de Centrifugo.
 - [ ] Cortar el transporte y Redis, no solo la pieza que entrega.
-- [ ] Repetir con miles de pantallas en vez de 100, y con reconexión más lenta que 100 ms.
+- [ ] Repetir con reconexión más lenta que 100 ms.
+- [ ] Aislar el techo de Centrifugo con varias pantallas por cuenta: protocolo binario en vez de JSON, la sonda repartida en varios procesos y los tiempos de escritura del servidor.
+- [ ] Varias réplicas: de la pieza de entrega detrás de un balanceador, y del lector repartiéndose las particiones del transporte, con el estado por emisor cambiando de dueño.
+- [ ] Cuentas de tamaño desigual y el último estado de cada emisor al conectar una pantalla.
 - [ ] En NATS, acortar `AckWait` y hacer que el consumidor espere a las pantallas antes de leer, para ver si bajan la pérdida y el atraso de 30 segundos.
 - [ ] Redpanda Connect como puente de Kinesis a Centrifugo, sin tocar a quien produce.
 - [ ] En Zilla, encontrar por qué algunos flujos no vuelven después del corte, y repetir con un cliente que corte la espera, con HTTP/2, con retención corta en el tópico y con otras compresiones (lz4, zstd).
@@ -248,23 +283,23 @@ Qué significa cada etiqueta:
 - [ ] Más de dos cortes por ruta: lo que pasa al matar un consumidor depende de en qué estaba en ese instante.
 - [ ] Confirmar tres cosas de AWS que el modelo deja fuera o supone: si SNS cobra transferencia al entregar a SQS en la misma región, qué cuota de SNS FIFO aplica sobre unos miles de mensajes por segundo, y si Centrifugo borra de SQS por lote o de a un mensaje.
 - [ ] Sumar al modelo el disco, Redis, la salida a internet y las horas de personas para construir y operar cada camino.
-- [ ] Grabar la demo animada: `make imagenes` vuelve a medir y tarda cerca de dos horas.
 
 ## Cuándo sí / cuándo no
 
-Borrador, por revisar junto con el veredicto. Aplicando el criterio escrito antes de medir, ninguna ruta sin código propio cumple todo: Redpanda + Centrifugo congela 45 segundos y Redpanda + EMQX 29, Redpanda + Zilla perdió eventos en uno de sus dos cortes y no aguantó 4 veces la carga, NATS + Centrifugo pierde eventos, y NATS + Centrifugo con Redis no perdió pero, con Redis en un núcleo, no aguantó 4 veces la carga. Eso cae en **Depende**.
+Aplicando el criterio escrito antes de medir, ninguna ruta sin código propio cumple todo: Redpanda + Centrifugo congela 45 segundos y Redpanda + EMQX 29, Redpanda + Zilla perdió eventos en uno de sus dos cortes y no aguantó 4 veces la carga, NATS + Centrifugo pierde eventos, y NATS + Centrifugo con Redis no perdió pero, con Redis en un núcleo, no aguantó 4 veces la carga. Eso cae en **Depende**.
 
 **Cuándo sí usar una herramienta lista para entregar a pantallas (Centrifugo, EMQX o Zilla):**
 
-- El equipo no quiere mantener un servidor WebSocket propio ni la lógica de reconexión: son 27 a 57 líneas de configuración en vez de 85 a 149 de código, y la recuperación de la pantalla viene resuelta.
+- El equipo no quiere mantener un servidor WebSocket propio ni la lógica de reconexión: son 27 a 57 líneas de configuración en vez de 85 a 149 de código, y la recuperación de la pantalla viene incluida. Que venga incluida no quiere decir que no pierda: solo Centrifugo con Redis no perdió nada.
 - Las pantallas necesitan recuperar lo que se perdieron al reconectarse. Entonces va con Redis, y se dimensiona para eso.
-- El volumen deja holgura: con Redis, mide la capacidad antes de comprometerte.
+- El volumen deja holgura: con Redis, Centrifugo aguantó 10.000 eventos por segundo y no 20.000. Mide la capacidad antes de comprometerte.
 
 **Cuándo no:**
 
 - Si no vas a operar Redis y perder eventos en pantalla no es aceptable: un consumidor propio sobre Kafka con el tiempo de sesión en 6 segundos volvió en menos de 6 y no perdió nada en 2 cortes. No es una garantía: guarda su avance sin esperar a que la pantalla reciba.
+- Si muchas pantallas miran la misma cuenta y vas con una sola instancia: Centrifugo falló a 133.360 entregas por segundo y el consumidor propio en Go aguantó 333.400. Ese techo de Centrifugo es provisorio, porque puede ser del cliente con que se midió, y repartir entre varias réplicas con Redis no se midió. Mide con tus pantallas por cuenta antes de comprometerte.
 - Si necesitas más de un nodo y no vas a pagar licencia: EMQX gratis es un solo nodo.
-- Si no controlas a quien produce: Zilla pide lotes sin comprimir y un tópico con poca retención.
+- Si no controlas a quien produce: Zilla no entregó los lotes comprimidos con snappy y manda a cada pantalla nueva todo lo que el tópico retiene.
 - Si el transporte se queda en Kinesis y no quieres tocar a quien produce: Centrifugo no lee Kinesis. Hace falta un puente o un consumidor con KCL o Flink.
 - Si piensas en SQS para simplificar: con un evento por mensaje el modelo da USD 9.705 al mes contra USD 2.428 de la línea base.
 

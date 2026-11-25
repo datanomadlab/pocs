@@ -1,4 +1,4 @@
-# Una sola imagen con las tres piezas en Go: generador, sonda y consumidor.
+# Una sola imagen con las piezas en Go: generador, sonda, consumidor y el prototipo de enriquecimiento.
 FROM golang:1.27-alpine AS compilar
 WORKDIR /src
 COPY go.mod go.sum ./

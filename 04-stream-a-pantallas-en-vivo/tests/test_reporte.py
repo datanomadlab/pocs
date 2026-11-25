@@ -61,7 +61,7 @@ def test_numeros_en_formato_espanol():
 def test_celdas():
     ruta = RUTAS[0]
     assert reporte.p99(ruta) == "19 ms"
-    assert reporte.aguanta(ruta) == "≥ 80.000/s"
+    assert reporte.aguanta(ruta) == ">= 80.000/s"
     assert reporte.nucleos(ruta) == "0,16 + 0,22"
     assert reporte.codigo(ruta) == "135 líneas"
     assert reporte.codigo(RUTAS[1]) == "28 de config."
@@ -94,6 +94,14 @@ def test_resumen_lleva_cada_ruta_con_su_etiqueta_y_cabe_en_la_terminal():
     assert any("SQS FIFO + Centrifugo" in l and l.endswith("simulado") for l in lineas)
     assert any(l.startswith("Costo al mes") and l.endswith("modelo") for l in lineas)
     assert max(len(l) for l in lineas) <= reporte.ANCHO_RESUMEN
+
+
+def test_resumen_se_puede_grabar_en_la_demo():
+    texto = reporte.resumen(MEDICION)
+    # La fuente del video no trae «≥»: en la terminal va «>=».
+    assert "≥" not in texto and ">= 80.000/s " in texto
+    # 13 rutas, los costos y el aviso final tienen que caber en las 28 líneas del video: sin líneas de más.
+    assert texto.splitlines()[1] != ""
 
 
 def test_una_etiqueta_desconocida_no_se_publica():
@@ -140,3 +148,11 @@ def test_costos_locales_solo_llevan_las_tablas_de_costos():
     texto = reporte.costos_markdown(MEDICION)
     assert "Costo mensual de cada camino" in texto and "horas caídas" in texto
     assert "p99" not in texto
+
+
+def test_una_ruta_medida_otro_dia_se_nombra_aparte():
+    rutas = [_ruta("redpanda-go", "redpanda", "go"), {**_ruta("nats-go", "nats", "go"), "fecha": "2026-11-25"}]
+    medicion = {**MEDICION, "rutas": rutas}
+    aviso = "NATS + Go se volvió a medir el 25 de noviembre de 2026."
+    assert aviso in reporte.markdown(medicion) and aviso in reporte.tablas(medicion)
+    assert "se volvió a medir" not in reporte.markdown(MEDICION)

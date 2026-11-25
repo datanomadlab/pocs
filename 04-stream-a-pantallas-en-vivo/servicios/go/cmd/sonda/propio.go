@@ -15,23 +15,23 @@ const pausaReconexion = 100 * time.Millisecond
 // se haya publicado mientras tanto no se recupera, porque ese servidor no guarda historial.
 func conectarPropio(o opciones, r *registro, lista func()) {
 	for i := 0; i < o.pantallas; i++ {
-		go func(cuentas []int) {
+		go func(pantalla int, cuentas []int) {
 			for primera := true; ; primera = false {
 				if !primera {
 					r.reconexiones.Add(1)
 					time.Sleep(pausaReconexion)
 				}
-				escuchar(o.destino, cuentas, r, func() {
+				escuchar(o.destino, pantalla, cuentas, r, func() {
 					if primera {
 						lista()
 					}
 				})
 			}
-		}(cuentasDe(i, o))
+		}(i, cuentasDe(i, o))
 	}
 }
 
-func escuchar(destino string, cuentas []int, r *registro, suscrita func()) {
+func escuchar(destino string, pantalla int, cuentas []int, r *registro, suscrita func()) {
 	ctx := context.Background()
 	conn, _, err := websocket.Dial(ctx, destino, nil)
 	if err != nil {
@@ -48,6 +48,6 @@ func escuchar(destino string, cuentas []int, r *registro, suscrita func()) {
 		if err != nil {
 			return
 		}
-		r.recibir(cuerpo)
+		r.recibir(cuerpo, pantalla)
 	}
 }

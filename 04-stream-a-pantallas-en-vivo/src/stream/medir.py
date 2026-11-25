@@ -37,7 +37,8 @@ def corrida(compose: Compose, p: config.Parametros, nombre: str, tasa: int, segu
     margen = config.MARGEN_SONDA if cortar_a_los is None else config.MARGEN_CORTE
     sonda = compose.abrir(*compose.herramienta(
         "sonda", "-protocolo", protocolo, "-destino", url, "-corrida", nombre,
-        "-pantallas", str(p.pantallas), "-cuentas", str(p.cuentas), "-duracion", f"{segundos + margen}s"))
+        "-pantallas", str(p.pantallas), "-cuentas", str(p.cuentas), "-espectadores", str(p.espectadores),
+        "-duracion", f"{segundos + margen}s"))
     try:
         if sonda.stdout.readline().strip() != "LISTO":
             raise RutaFallida(f"las pantallas no lograron suscribirse: {sonda.stderr.read().strip()[-300:]}")
@@ -86,6 +87,8 @@ def corrida(compose: Compose, p: config.Parametros, nombre: str, tasa: int, segu
         "duplicados": visto["duplicados"], "desordenados": visto["desordenados"],
         "sin_recuperar": visto["sin_recuperar"], "reconexiones": visto["reconexiones"],
         "latencia_ms": visto["latencia_ms"],
+        # Entregas a los demás espectadores de cada cuenta (0 si cada cuenta la mira una sola pantalla).
+        "copias": visto.get("copias", 0),
     }
     if uso["antes"] and uso["despues"]:
         fase["nucleos"] = {k: round(nucleos_usados(uso["antes"][k], uso["despues"][k]), 3) for k in ids}
