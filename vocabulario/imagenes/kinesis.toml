@@ -1,0 +1,54 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/kinesis.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Kinesis"
+pregunta = "Guarda eventos en orden y deja que varios programas los lean, cada uno a su ritmo."
+nota = "La clave de partición decide el shard. Hasta dónde leyó cada programa no lo recuerda Kinesis: lo guarda quien lee."
+
+conectores = [
+  "M402 400H520",
+  "M850 400H968",
+  "M237 460V640H520",
+  "M1168 460V580",
+]
+
+[[caja]]
+titulo = "productor"
+detalle = "escribe con clave de partición"
+x = 72
+y = 340
+w = 330
+h = 120
+
+[[caja]]
+titulo = "shard 1"
+detalle = "sensor-1 y sensor-3, en orden"
+x = 520
+y = 340
+w = 330
+h = 120
+
+[[caja]]
+titulo = "iterador"
+detalle = "tu posición dentro del shard"
+x = 968
+y = 340
+w = 400
+h = 120
+
+[[caja]]
+titulo = "shard 0"
+detalle = "sensor-2"
+x = 520
+y = 580
+w = 330
+h = 120
+
+[[caja]]
+titulo = "3 registros"
+detalle = "se leen en orden y no se borran"
+x = 968
+y = 580
+w = 400
+h = 120
+resultado = true

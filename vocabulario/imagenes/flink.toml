@@ -1,0 +1,54 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/flink.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Apache Flink"
+pregunta = "Calcula sobre eventos que no dejan de llegar y recuerda sus cuentas aunque se caiga una máquina."
+nota = "El estado es la cuenta a medio hacer. El checkpoint es su foto: si algo falla, Flink vuelve a la última."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+  "M850 660H1000",
+]
+
+[[caja]]
+titulo = "stream"
+detalle = "lecturas que no terminan"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "ventana"
+detalle = "tramos de 10 segundos"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "resumen por medidor"
+detalle = "uno al cerrar cada ventana"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "estado"
+detalle = "la cuenta a medio hacer"
+x = 520
+y = 600
+w = 330
+h = 120
+
+[[caja]]
+titulo = "checkpoint"
+detalle = "foto del estado cada 10 s"
+x = 1000
+y = 600
+w = 420
+h = 120

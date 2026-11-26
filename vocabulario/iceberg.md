@@ -5,11 +5,11 @@ subtitulo: "Qué es un formato de tabla, qué son las versiones y el catálogo, 
 descripcion: "Apache Iceberg explicado desde cero: la capa que convierte archivos Parquet en una tabla con versiones. Con un ejemplo real en Python."
 resumen: "Formato de tabla abierto que convierte un montón de archivos Parquet en una tabla con versiones, particiones y cambios seguros."
 categoria: "formato"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "PyIceberg 0.12.0 con Python 3.12 en macOS"
 relacionados: "parquet, duckdb, bucket"
-substack:
+substack: "https://datanomadlab.substack.com/p/que-es-iceberg"
 ---
 
 # Apache Iceberg: cómo un montón de archivos se vuelve una tabla

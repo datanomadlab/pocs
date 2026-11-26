@@ -1,0 +1,54 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/sse.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "SSE"
+pregunta = "Una respuesta HTTP que no se cierra: el servidor escribe eventos y la pantalla los lee al llegar."
+nota = "El id permite retomar: la pantalla dice cuál fue el último evento que vio y el servidor sigue desde el siguiente."
+
+conectores = [
+  "M402 400H520",
+  "M920 400H1038",
+  "M1229 460V580",
+  "M1038 640H920",
+]
+
+[[caja]]
+titulo = "servidor"
+detalle = "responde text/event-stream"
+x = 72
+y = 340
+w = 330
+h = 120
+
+[[caja]]
+titulo = "un evento por segundo"
+detalle = "cada uno con id: y data:"
+x = 520
+y = 340
+w = 400
+h = 120
+
+[[caja]]
+titulo = "pantalla"
+detalle = "curl -N o EventSource"
+x = 1038
+y = 340
+w = 382
+h = 120
+
+[[caja]]
+titulo = "se corta en el 7"
+detalle = "pide con Last-Event-ID: 7"
+x = 1038
+y = 580
+w = 382
+h = 120
+
+[[caja]]
+titulo = "sigue en el 8"
+detalle = "del 8 al 11 llegan de golpe"
+x = 520
+y = 580
+w = 400
+h = 120
+resultado = true

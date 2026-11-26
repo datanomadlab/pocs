@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/websocket.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "WebSocket"
+pregunta = "Una conexión que queda abierta: el servidor envía cada mensaje apenas lo tiene."
+nota = "El protocolo mantiene la conexión, pero no guarda ni reenvía lo que se emitió mientras estuvo cortada."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+]
+
+[[caja]]
+titulo = "servidor"
+detalle = "emite una lectura por segundo"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "conexión abierta"
+detalle = "la pantalla la pidió una vez"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "pantalla"
+detalle = "recibe sin volver a preguntar"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "corte de 3 s"
+detalle = "las lecturas 9 a 11 no llegan"
+x = 520
+y = 600
+w = 330
+h = 120

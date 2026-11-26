@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/mqtt.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "MQTT"
+pregunta = "Unos programas publican mensajes en un tema y otros los reciben por suscripción, a través de un broker."
+nota = "Quien publica y quien recibe no se conocen: solo comparten el nombre del tema. El reparto lo hace el broker."
+
+conectores = [
+  "M432 450H550",
+  "M910 450H1028",
+  "M730 510V600",
+]
+
+[[caja]]
+titulo = "quien publica"
+detalle = "casa/cocina/temperatura"
+x = 72
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "broker"
+detalle = "reparte según el tema"
+x = 550
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "quien se suscribió"
+detalle = "pidió casa/+/temperatura"
+x = 1028
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "lo que guarda"
+detalle = "retenido y sesiones"
+x = 550
+y = 600
+w = 360
+h = 120

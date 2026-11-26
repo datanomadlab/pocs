@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/emqx.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "EMQX"
+pregunta = "Recibe mensajes MQTT y los reparte a quien se suscribió, con reglas para filtrarlos y reenviarlos."
+nota = "Quien publica no sabe quién lee. La regla es configuración: no hay que escribir otro programa."
+
+conectores = [
+  "M432 450H540",
+  "M900 450H1010",
+  "M720 510V600",
+]
+
+[[caja]]
+titulo = "publicador"
+detalle = "un sensor manda 31,2 grados"
+x = 72
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "EMQX"
+detalle = "el broker: recibe y reparte"
+x = 540
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "suscriptor"
+detalle = "recibe el aviso en alertas/horno"
+x = 1010
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "regla"
+detalle = "si pasa de 30 grados, avisa"
+x = 540
+y = 600
+w = 360
+h = 120

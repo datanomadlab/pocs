@@ -5,11 +5,11 @@ subtitulo: "Qué es un warehouse, cómo se paga BigQuery y los hábitos que evit
 descripcion: "BigQuery explicado desde cero: qué es un warehouse sin servidores, cómo funciona el cobro por demanda y cómo saber cuánto leerá una consulta antes de correrla."
 resumen: "Warehouse de Google Cloud sin servidores que administrar, donde consultas con SQL y pagas por los datos que lee cada consulta."
 categoria: "base de datos"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "sin ejecutar (no había cuenta de Google Cloud en el equipo donde se generó)"
 relacionados: "duckdb, parquet, iceberg"
-substack:
+substack: "https://datanomadlab.substack.com/p/que-es-bigquery"
 ---
 
 # BigQuery: el warehouse que cobra por lo que lee cada consulta

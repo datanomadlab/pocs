@@ -9,12 +9,25 @@ Los redacta una IA siguiendo una plantilla fija, y cada post lo dice al final. L
 <!-- indice:inicio -->
 | Término | Qué es | Categoría | Estado |
 |---|---|---|---|
-| [BigQuery](bigquery.md) | Warehouse de Google Cloud sin servidores que administrar, donde consultas con SQL y pagas por los datos que lee cada consulta. | base de datos | borrador |
-| [Bucket](bucket.md) | Carpeta en la nube donde se guardan archivos de cualquier tamaño y se pagan por lo que pesan, sin servidor que mantener. | infraestructura | borrador |
-| [Docker](docker.md) | Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina. | infraestructura | borrador |
-| [DuckDB](duckdb.md) | Motor SQL para análisis que corre dentro de tu programa y lee archivos directamente, sin servidor. | motor de consulta | borrador |
-| [Apache Iceberg](iceberg.md) | Formato de tabla abierto que convierte un montón de archivos Parquet en una tabla con versiones, particiones y cambios seguros. | formato | borrador |
-| [Parquet](parquet.md) | Formato de archivo que guarda las tablas por columnas, comprimidas, para que las consultas lean solo lo que necesitan. | formato | borrador |
+| [BigQuery](https://datanomadlab.substack.com/p/que-es-bigquery) | Warehouse de Google Cloud sin servidores que administrar, donde consultas con SQL y pagas por los datos que lee cada consulta. | base de datos | publicado |
+| [Bucket](https://datanomadlab.substack.com/p/que-es-bucket) | Carpeta en la nube donde se guardan archivos de cualquier tamaño y se pagan por lo que pesan, sin servidor que mantener. | infraestructura | publicado |
+| [Centrifugo](centrifugo.md) | Servidor que mantiene las conexiones con las pantallas y les reparte al instante los mensajes de cada canal. | mensajería | borrador |
+| [Docker](https://datanomadlab.substack.com/p/docker-como-probar-una-base-de-datos) | Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina. | infraestructura | publicado |
+| [DuckDB](https://datanomadlab.substack.com/p/que-es-duckdb) | Motor SQL para análisis que corre dentro de tu programa y lee archivos directamente, sin servidor. | motor de consulta | publicado |
+| [EMQX](emqx.md) | Servidor que recibe mensajes MQTT y los reparte a quien se suscribió, con reglas para filtrarlos y reenviarlos. | mensajería | borrador |
+| [Apache Flink](flink.md) | Calcula sobre eventos que no dejan de llegar y recuerda sus cuentas aunque se caiga una máquina. | procesamiento | borrador |
+| [Apache Iceberg](https://datanomadlab.substack.com/p/que-es-iceberg) | Formato de tabla abierto que convierte un montón de archivos Parquet en una tabla con versiones, particiones y cambios seguros. | formato | publicado |
+| [Apache Kafka](kafka.md) | Guarda eventos en orden y deja que varios programas los lean, cada uno a su ritmo y sin perder su lugar. | mensajería | borrador |
+| [Amazon Kinesis Data Streams](kinesis.md) | Servicio de AWS que guarda eventos en orden y deja que varios programas los lean, cada uno a su ritmo. | mensajería | borrador |
+| [MQTT](mqtt.md) | Protocolo en que unos programas publican mensajes en un tema y otros los reciben al suscribirse, mediante un broker. | protocolo | borrador |
+| [NATS](nats.md) | Lleva mensajes entre programas y, si se lo pides, los guarda hasta que alguien confirma que los recibió. | mensajería | borrador |
+| [Parquet](https://datanomadlab.substack.com/p/que-es-parquet) | Formato de archivo que guarda las tablas por columnas, comprimidas, para que las consultas lean solo lo que necesitan. | formato | publicado |
+| [Redis](redis.md) | Servidor que guarda datos en memoria, por clave, con estructuras como listas y streams, y los borra cuando vencen. | base de datos | borrador |
+| [Redpanda](redpanda.md) | Servidor de eventos que entiende a los clientes de Kafka y corre como un solo programa, sin Java. | mensajería | borrador |
+| [Amazon SQS](sqs.md) | Cola de mensajes que opera AWS: un programa deja mensajes y otro los retira, los procesa y los borra. | mensajería | borrador |
+| [SSE](sse.md) | Una respuesta HTTP que no se cierra: el servidor escribe eventos y la pantalla los lee a medida que llegan. | protocolo | borrador |
+| [WebSocket](websocket.md) | Protocolo que deja abierta una conexión entre una página y un servidor para que cualquiera de los dos envíe mensajes. | protocolo | borrador |
+| [Zilla](zilla.md) | Proxy que reparte un tópico de Kafka a las pantallas por protocolos de la web, solo con un archivo de configuración. | mensajería | borrador |
 <!-- indice:fin -->
 
 ## Un término, un post
