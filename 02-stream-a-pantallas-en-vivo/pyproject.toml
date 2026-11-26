@@ -1,0 +1,17 @@
+[project]
+name = "stream-a-pantallas-en-vivo"
+version = "0.1.0"
+requires-python = ">=3.12"
+# Fija cada versión después de revisar la vigente en su página oficial o en PyPI.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov=stream --cov-report=term-missing -p no:cacheprovider"

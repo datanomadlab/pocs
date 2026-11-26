@@ -2,7 +2,7 @@
 
 > **Pregunta:** ¿cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket?
 >
-> **Veredicto:** pendiente. Falta medir BigQuery y un bucket de verdad (ver [Qué falta](#qué-falta)).
+> **Veredicto:** Depende. Conviene cuando la cuenta de BigQuery ya duele y viene de consultas repetidas sobre tablas grandes; no si los datos caben en la capa gratuita. Sigue sin medirse BigQuery y un bucket de verdad (ver [Qué falta](#qué-falta)).
 
 ![Arquitectura del experimento](docs/arquitectura.png)
 

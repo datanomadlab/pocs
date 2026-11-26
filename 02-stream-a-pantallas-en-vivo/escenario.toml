@@ -1,0 +1,139 @@
+# Precios y supuestos del modelo de costos. Todo en USD, región us-east-1 (N. Virginia), por demanda.
+# IMPORTANTE: los precios cambian. Revisa cada fuente antes de publicar y actualiza "revisado".
+# Todo lo que no es un precio publicado ni una medición lleva la palabra SUPUESTO.
+#
+# Para correr el modelo con tus cifras sin subirlas: copia este archivo a escenario.local.toml
+# (git lo ignora), cambia [carga] y [[escenario]] y corre `make local`. El resultado sale a la
+# terminal y a data/, que tampoco se sube; docs/ siempre usa este archivo.
+
+[carga]
+bytes_por_evento = 300        # tamaño del evento ya armado
+consumidores = 3              # plataformas que leen el mismo stream, cada una con su pieza de entrega
+horas_mes = 730
+# Lo que cuesta una hora caída. El reporte muestra el punto de equilibrio para cada valor.
+usd_hora_caida = [100, 1000, 10000]
+# SUPUESTO: cada pieza se dimensiona para trabajar a la mitad de su capacidad. Es el supuesto que
+# más mueve el cómputo propio: con 0,25 el cómputo se duplica; con 1,0 no queda margen para picos.
+utilizacion = 0.5
+# SUPUESTO: dos copias de cada pieza de entrega, para que una pueda caer.
+replicas_entrega = 2
+# SUPUESTO: la CPU crece en proporción al volumen, y un núcleo del computador donde se midió
+# rinde como una vCPU Graviton. Sin medir en la nube, el cómputo propio puede estar errado por un
+# factor de 2 hacia cualquier lado; a 10.000 eventos por segundo eso mueve menos de USD 100.
+#
+# Los supuestos que más mueven el resultado, de mayor a menor a 10.000 eventos por segundo:
+#   1. [kinesis] fan_out: unos USD 800 de la línea base. Sin él, la lectura de Kinesis es gratis.
+#   2. [flink] mb_s_por_kpu: USD 1.009 con el supuesto, USD 1.776 si una KPU rinde la mitad, USD 753 si rinde el doble.
+#   3. [transferencia] fraccion_entre_zonas: unos USD 420 en los caminos con brokers.
+# Y dos que no están en el modelo: se escribe un evento por registro o mensaje (agregar varios por
+# registro baja la escritura de Kinesis igual que el empaquetado baja SQS), y los datos viajan sin
+# comprimir (comprimir baja la transferencia entre zonas de Kafka y NATS).
+
+[[escenario]]
+nombre = "Equipo chico"
+detalle = "1.000 eventos por segundo"
+eventos_s = 1_000
+
+[[escenario]]
+nombre = "El caso medido"
+detalle = "10.000 eventos por segundo"
+eventos_s = 10_000
+
+[[escenario]]
+nombre = "Diez veces más"
+detalle = "100.000 eventos por segundo"
+eventos_s = 100_000
+
+[kinesis]
+# Fuente: https://aws.amazon.com/kinesis/data-streams/pricing/ (modo aprovisionado)
+# Cuotas: https://docs.aws.amazon.com/streams/latest/dev/service-sizes-and-limits.html
+revisado = "2026-11-21"
+usd_shard_hora = 0.015
+usd_millon_unidades_put = 0.014     # una unidad = cada trozo de 25 KB de un registro
+bytes_unidad_put = 25_000
+usd_consumidor_shard_hora = 0.015   # enhanced fan-out: por cada consumidor registrado y cada shard
+usd_gb_fan_out = 0.013              # enhanced fan-out: por GB que lee cada consumidor
+registros_s_por_shard = 1_000       # cuota de escritura
+bytes_s_por_shard = 1_000_000       # cuota de escritura
+# SUPUESTO: los shards se llenan hasta el 70 % para absorber picos sin rechazar escrituras.
+llenado_shard = 0.7
+# SUPUESTO: cada consumidor usa enhanced fan-out. La lectura compartida es gratis, pero los 3
+# consumidores se reparten 5 lecturas por segundo y por shard, y la pantalla lo nota.
+fan_out = true
+
+[flink]
+# Fuente: https://aws.amazon.com/managed-service-apache-flink/pricing/
+revisado = "2026-11-21"
+usd_kpu_hora = 0.11                 # 1 KPU = 1 vCPU y 4 GB
+kpu_orquestacion = 1                # una KPU adicional por aplicación
+gb_disco_por_kpu = 50
+usd_gb_mes_disco = 0.10
+# La página de precios dimensiona sus ejemplos con 1 MB por segundo por KPU. No se midió: el
+# reporte muestra cómo cambia el costo si una KPU rinde la mitad o el doble.
+mb_s_por_kpu = 1.0
+
+[fargate]
+# Fuente: https://aws.amazon.com/fargate/pricing/ (Linux/ARM)
+revisado = "2026-11-21"
+usd_vcpu_hora = 0.03238
+usd_gb_hora = 0.00356
+tamanos_vcpu = [0.25, 0.5, 1, 2, 4, 8, 16]
+gb_por_vcpu = 2                     # SUPUESTO: 2 GB por vCPU, con 1 GB de mínimo
+
+[ec2]
+# Fuente: https://aws.amazon.com/ec2/pricing/on-demand/ (la tabla no carga sin JavaScript; el valor
+# se leyó del feed de precios de AWS para us-east-1, Linux, por demanda).
+revisado = "2026-11-21"
+nodos_minimos = 3                   # un broker por zona, replicación 3
+vcpu_por_nodo = [2, 4]              # m7g.large y m7g.xlarge
+usd_hora_por_nodo = [0.0816, 0.1632]
+# No modelado: el disco de los brokers. Con un día de retención y 3 copias son unos 780 GB por
+# cada 10.000 eventos por segundo.
+
+[msk]
+# Fuente: https://aws.amazon.com/msk/pricing/ (brokers Express)
+# Capacidad: https://docs.aws.amazon.com/msk/latest/developerguide/bestpractices-express.html
+revisado = "2026-11-21"
+brokers_minimos = 3
+usd_broker_hora = 0.408             # express.m7g.large
+mb_s_entrada_por_broker = 15.6      # entrada recomendada por broker
+mb_s_salida_por_broker = 31.2       # salida recomendada por broker, sumando todos los consumidores
+usd_gb_entrada = 0.01
+usd_gb_mes_disco = 0.10
+horas_retencion = 24                # SUPUESTO
+
+[transferencia]
+# Fuente: AWS Price List, AWSDataTransfer us-east-1 ("regional data transfer - in/out/between EC2 AZs")
+# Regla: https://docs.aws.amazon.com/cur/latest/userguide/cur-data-transfers-charges.html
+revisado = "2026-11-21"
+usd_gb_entre_zonas = 0.01           # se cobra en la salida y en la entrada: 0,02 por GB que cruza
+# SUPUESTO: productores y consumidores repartidos parejo en 3 zonas, sin lectura desde la réplica
+# más cercana: 2 de cada 3 GB cruzan de zona. Kinesis, SNS y SQS no cobran transferencia en la región.
+fraccion_entre_zonas = 0.667
+# SUPUESTO: en MSK se cobra igual que entre instancias propias. La página de MSK solo dice que la
+# replicación entre brokers no se cobra.
+
+[sns_fifo]
+# Fuente: AWS Price List, AmazonSNS us-east-1; reglas en https://aws.amazon.com/sns/pricing/
+# Cuotas: https://docs.aws.amazon.com/general/latest/gr/sns.html
+revisado = "2026-11-21"
+usd_millon_publicaciones = 0.30     # un lote de hasta 10 mensajes cuenta como una solicitud
+usd_gb_publicado = 0.017
+usd_millon_entregas = 0.01          # mensajes publicados × colas suscritas
+usd_gb_entregado = 0.001
+mensajes_por_lote = 10
+# Cuotas, no modeladas: con alcance por tema, un tema FIFO admite 3.000 mensajes por segundo; con
+# alcance por grupo de mensajes, 300 por grupo y el tope de publicación de la cuenta. Hay que
+# confirmar cuál aplica antes de pasar de unos miles de mensajes por segundo.
+# No verificado: la página de SNS dice que la entrega a SQS paga transferencia de datos a tarifa de
+# internet también dentro de la región, pero no publica la tarifa. No está en el modelo.
+
+[sqs_fifo]
+# Fuente: AWS Price List, AWSQueueService us-east-1; reglas en https://aws.amazon.com/sqs/pricing/
+revisado = "2026-11-21"
+usd_millon_solicitudes = 0.50       # primer tramo, hasta 100.000 millones de solicitudes al mes
+mensajes_por_lote = 10              # un lote de hasta 10 mensajes cuenta como una solicitud
+bytes_por_solicitud = 65_536        # cada trozo de 64 KB del lote se cobra como una solicitud
+# SUPUESTO: por cada lote, el consumidor hace una solicitud para recibir y otra para borrar, y no
+# hay lecturas vacías. Lo que SNS deposita en la cola no se cuenta como solicitud de SQS.
+solicitudes_por_lote = 2

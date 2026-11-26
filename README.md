@@ -6,7 +6,8 @@ Cada carpeta numerada es un experimento: una herramienta de datos o IA puesta a 
 
 | # | Experimento | Pregunta | Estado | Veredicto |
 |---|---|---|---|---|
-| 01 | [Lakehouse de bolsillo](01-lakehouse-de-bolsillo/) | ¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket? | En construcción | Pendiente |
+| 01 | [Lakehouse de bolsillo](01-lakehouse-de-bolsillo/) | ¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket? | Publicado | Depende |
+| 02 | [Stream a pantallas en vivo](02-stream-a-pantallas-en-vivo/) | ¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo? | En construcción | Depende |
 
 Los veredictos posibles son tres: **Lo usaría**, **Depende** y **No todavía**.
 

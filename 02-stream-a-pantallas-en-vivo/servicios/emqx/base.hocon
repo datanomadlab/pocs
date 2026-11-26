@@ -1,0 +1,36 @@
+## EMQX lee el tópico de Kafka y lo vuelve a publicar como MQTT: la pantalla se conecta por
+## MQTT sobre WebSocket y se suscribe al tema de su cuenta ("cuenta:7"). Todo es configuración.
+
+## Conexión a Kafka y lectura del tópico con un grupo de consumidores.
+connectors.kafka_consumer.transporte {
+  bootstrap_hosts = "redpanda:9092"
+}
+sources.kafka_consumer.eventos {
+  connector = transporte
+  parameters {
+    topic = eventos
+    group_id = pantallas
+    offset_reset_policy = latest
+    key_encoding_mode = none
+    value_encoding_mode = none
+  }
+}
+
+## Regla: cada mensaje de Kafka se publica en el tema que dice su cabecera, sin tocar el contenido.
+rule_engine.rules.a_pantallas {
+  sql = "SELECT value, map_get('x-centrifugo-channels', headers) as canal FROM \"$bridges/kafka_consumer:eventos\""
+  actions = [
+    {
+      function = republish
+      args {
+        topic = "${canal}"
+        payload = "${value}"
+        qos = 1
+      }
+    }
+  ]
+}
+
+## La sesión de una pantalla que se desconecta se guarda 30 s (de fábrica, 2 horas): si vuelve
+## antes, EMQX le entrega lo que se publicó mientras no estaba.
+mqtt.session_expiry_interval = 30s

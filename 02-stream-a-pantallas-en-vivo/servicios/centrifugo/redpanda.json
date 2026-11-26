@@ -1,0 +1,28 @@
+{
+  "client": {"allow_anonymous_connect_without_token": true, "allowed_origins": ["*"]},
+  "channel": {
+    "namespaces": [
+      {
+        "name": "cuenta",
+        "allow_subscribe_for_client": true,
+        "allow_subscribe_for_anonymous": true,
+        "history_size": 300,
+        "history_ttl": "60s",
+        "force_recovery": true
+      }
+    ]
+  },
+  "consumers": [
+    {
+      "enabled": true,
+      "name": "eventos",
+      "type": "kafka",
+      "kafka": {
+        "brokers": ["redpanda:9092"],
+        "topics": ["eventos"],
+        "consumer_group": "pantallas",
+        "publication_data_mode": {"enabled": true, "channels_header": "x-centrifugo-channels"}
+      }
+    }
+  ]
+}

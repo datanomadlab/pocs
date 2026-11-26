@@ -1,0 +1,17 @@
+# Guion de docs/demo.gif. Se graba desde la raíz con: make demo-gif EXP=02-stream-a-pantallas-en-vivo
+# Cada comando corre de verdad y el GIF muestra su salida tal cual; solo se acortan las esperas largas.
+# Lo que se graba es público: ningún comando debe imprimir rutas de tu equipo ni nombres de usuario
+# (por eso `make test` no va: pytest imprime rootdir).
+#
+# Medir las 13 rutas tarda cerca de dos horas. La demo mide de nuevo una sola, la de Centrifugo con
+# Redis sobre NATS, y el resumen muestra esa junto a las otras 12 de la última medición completa.
+# Por eso no hay `make destroy` antes ni después: borraría la medición que el resumen conserva.
+
+titulo = "experimento 02 · stream a pantallas en vivo"
+
+# Líneas que se muestran en gris: el eco de make.
+tenue = ['^uv (run|sync)\b']
+
+[[paso]]
+comando = "RUTAS=nats-centrifugo-redis make demo"
+pausa = 7   # segundos para leer el resumen

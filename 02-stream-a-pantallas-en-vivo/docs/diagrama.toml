@@ -1,0 +1,74 @@
+# Diagrama del experimento. Se dibuja desde la raíz con: make diagrama EXP=02-stream-a-pantallas-en-vivo
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. La caja "veredicto" va en ámbar.
+numero = "04"
+titulo = "Stream a pantallas en vivo"
+pregunta = "¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo?"
+nota = "13 rutas: un transporte más una forma de entregar. Redpanda y NATS medidos en local; Kinesis y SQS contra emuladores; el costo mensual es un modelo."
+
+conectores = [
+  "M310 450H350V320H390",
+  "M350 450V580H390",
+  "M680 320H760",
+  "M680 580H760",
+  "M720 320V580",
+  "M1050 320H1130",
+  "M1050 580H1090V320",
+  "M1255 380V520",
+]
+
+[[caja]]
+titulo = "emisores"
+detalle = "eventos ya armados"
+x = 60
+y = 390
+w = 250
+h = 120
+
+[[caja]]
+titulo = "redpanda · nats"
+detalle = "transporte, medido"
+x = 390
+y = 260
+w = 290
+h = 120
+
+[[caja]]
+titulo = "kinesis · sqs"
+detalle = "transporte, emulado"
+x = 390
+y = 520
+w = 290
+h = 120
+
+[[caja]]
+titulo = "consumidor propio"
+detalle = "go o node, con websocket"
+x = 760
+y = 260
+w = 290
+h = 120
+
+[[caja]]
+titulo = "herramienta lista"
+detalle = "centrifugo, zilla o emqx"
+x = 760
+y = 520
+w = 290
+h = 120
+
+[[caja]]
+titulo = "pantallas"
+detalle = "la sonda mide aquí"
+x = 1130
+y = 260
+w = 250
+h = 120
+
+[[caja]]
+titulo = "veredicto"
+detalle = "latencia, corte y costo"
+x = 1130
+y = 520
+w = 250
+h = 120
+veredicto = true

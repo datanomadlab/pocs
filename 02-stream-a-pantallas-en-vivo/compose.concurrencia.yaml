@@ -1,0 +1,7 @@
+# Solo para `make concurrencia`. La sonda hace de miles de pantallas, así que necesita más núcleos
+# que los 2 del experimento para no ser ella el cuello de botella. Las piezas medidas conservan su tope.
+services:
+  sonda:
+    cpus: 8
+  generador:
+    cpus: 4

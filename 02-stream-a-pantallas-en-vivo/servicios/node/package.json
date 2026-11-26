@@ -1,0 +1,23 @@
+{
+  "name": "consumidor-node",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "El consumidor escrito a mano, en Node y TypeScript: lee del transporte y empuja a las pantallas por WebSocket.",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/consumidor.ts",
+    "revisar": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@confluentinc/kafka-javascript": "1.11.0",
+    "@nats-io/jetstream": "3.5.0",
+    "@nats-io/transport-node": "3.5.0",
+    "ws": "8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/ws": "8.18.2",
+    "typescript": "7.0.2"
+  }
+}

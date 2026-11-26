@@ -1,0 +1,64 @@
+# Zilla reparte el tópico de Kafka por Server-Sent Events (SSE): la pantalla pide
+# GET /eventos/cuenta:7 y recibe los eventos de esa cuenta. No hay código ni grupo de
+# consumidores: Zilla lee el tópico completo a una caché propia y filtra por la cabecera del
+# mensaje. Al reconectar, la pantalla manda el último id que vio y Zilla sigue desde ahí.
+# Una pantalla nueva recibe primero lo que la caché tiene de su cuenta y después lo que va
+# llegando. En esta versión no hay opción para que parta directo en vivo.
+name: pantallas
+bindings:
+  entrada_tcp:
+    type: tcp
+    kind: server
+    options:
+      host: 0.0.0.0
+      port: 7114
+    exit: entrada_http
+  entrada_http:
+    type: http
+    kind: server
+    options:
+      access-control:
+        policy: cross-origin
+    routes:
+      - when:
+          - headers:
+              :path: /eventos/*
+        exit: entrada_sse
+  entrada_sse:
+    type: sse
+    kind: server
+    exit: sse_a_kafka
+  sse_a_kafka:
+    type: sse-kafka
+    kind: proxy
+    routes:
+      - when:
+          - path: /eventos/{canal}
+        exit: cache_cliente
+        with:
+          topic: eventos
+          filters:
+            - headers:
+                x-centrifugo-channels: ${params.canal}
+  cache_cliente:
+    type: kafka
+    kind: cache_client
+    exit: cache_servidor
+  cache_servidor:
+    type: kafka
+    kind: cache_server
+    options:
+      # Lee el tópico aunque no haya pantallas conectadas.
+      bootstrap:
+        - eventos
+    exit: kafka
+  kafka:
+    type: kafka
+    kind: client
+    options:
+      servers:
+        - redpanda:9092
+    exit: salida_tcp
+  salida_tcp:
+    type: tcp
+    kind: client
