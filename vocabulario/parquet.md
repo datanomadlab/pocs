@@ -5,11 +5,11 @@ subtitulo: "Qué significa guardar por columnas, cuánto espacio y tiempo ahorra
 descripcion: "Parquet explicado desde cero: un formato de archivo por columnas y comprimido. Con una comparación real contra CSV en tamaño y velocidad."
 resumen: "Formato de archivo que guarda las tablas por columnas, comprimidas, para que las consultas lean solo lo que necesitan."
 categoria: "formato"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "DuckDB 1.2.0 (línea de comandos) en macOS"
 relacionados: "duckdb, iceberg, bucket"
-substack:
+substack: "https://datanomadlab.substack.com/p/que-es-parquet"
 ---
 
 # Parquet: por qué los datos grandes no se guardan en CSV

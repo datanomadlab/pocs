@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/centrifugo.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Centrifugo"
+pregunta = "Mantiene las conexiones con las pantallas y les reparte los mensajes de cada canal."
+nota = "Un canal es solo un nombre. La pantalla que vuelve de un corte dice en qué mensaje iba y recibe los que faltan."
+
+conectores = [
+  "M402 450H520",
+  "M880 450H1000",
+  "M700 510V600",
+]
+
+[[caja]]
+titulo = "tu programa"
+detalle = "publica por HTTP en un canal"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "centrifugo"
+detalle = "reparte a quien mira el canal"
+x = 520
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "pantalla al día"
+detalle = "recuperó 2 mensajes tras el corte"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "historial"
+detalle = "los últimos mensajes, numerados"
+x = 520
+y = 600
+w = 360
+h = 120

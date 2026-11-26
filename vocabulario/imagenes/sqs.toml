@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/sqs.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Amazon SQS"
+pregunta = "Una cola que opera AWS: un programa deja mensajes y otro los retira, los procesa y los borra."
+nota = "Recibir no saca el mensaje de la cola: lo esconde un rato. Si no lo borras, se entrega de nuevo."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+]
+
+[[caja]]
+titulo = "quien envía"
+detalle = "mensaje con grupo: pedido-17"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "cola fifo"
+detalle = "en orden dentro de cada grupo"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "recibir y borrar"
+detalle = "el mensaje sale de la cola"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "recibir sin borrar"
+detalle = "vuelve a los 30 segundos"
+x = 520
+y = 600
+w = 330
+h = 120

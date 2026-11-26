@@ -5,11 +5,11 @@ subtitulo: "Qué es un contenedor, para qué sirve y cómo levantar un Postgres 
 descripcion: "Docker explicado desde cero: imagen, contenedor y volumen, con un ejemplo real que levanta Postgres, lo usa y lo borra."
 resumen: "Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina."
 categoria: "infraestructura"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "Docker 29.9.3 en macOS, imagen postgres:18"
 relacionados: "duckdb, bucket"
-substack:
+substack: "https://datanomadlab.substack.com/p/docker-como-probar-una-base-de-datos"
 ---
 
 # Docker: cómo probar una base de datos sin instalarla

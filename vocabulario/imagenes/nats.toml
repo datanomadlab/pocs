@@ -1,0 +1,54 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/nats.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "NATS"
+pregunta = "Lleva mensajes entre programas y, si se lo pides, los guarda hasta que alguien confirma que los recibió."
+nota = "Sin confirmación dentro de la espera (AckWait, 30 s de fábrica), el servidor entrega el mensaje de nuevo."
+
+conectores = [
+  "M372 400H457",
+  "M757 400H842",
+  "M1142 400H1227",
+  "M222 460V580",
+]
+
+[[caja]]
+titulo = "quien publica"
+detalle = "asunto lecturas.cuenta-7"
+x = 72
+y = 340
+w = 300
+h = 120
+
+[[caja]]
+titulo = "stream"
+detalle = "JetStream guarda en disco"
+x = 457
+y = 340
+w = 300
+h = 120
+
+[[caja]]
+titulo = "consumidor"
+detalle = "recuerda por dónde ibas"
+x = 842
+y = 340
+w = 300
+h = 120
+
+[[caja]]
+titulo = "confirmado"
+detalle = "no se entrega de nuevo"
+x = 1227
+y = 340
+w = 300
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "sin stream"
+detalle = "si nadie escucha, se pierde"
+x = 72
+y = 580
+w = 300
+h = 120

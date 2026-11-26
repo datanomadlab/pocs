@@ -5,11 +5,11 @@ subtitulo: "Qué es, en qué se diferencia de Postgres y de pandas, y cómo cons
 descripcion: "DuckDB explicado desde cero: un motor SQL de análisis que corre en tu terminal y lee Parquet o CSV directamente. Con un ejemplo real."
 resumen: "Motor SQL para análisis que corre dentro de tu programa y lee archivos directamente, sin servidor."
 categoria: "motor de consulta"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "DuckDB 1.2.0 (línea de comandos) y 2.0.0 (Python) en macOS"
 relacionados: "parquet, iceberg, bigquery"
-substack:
+substack: "https://datanomadlab.substack.com/p/que-es-duckdb"
 ---
 
 # DuckDB: SQL sobre un archivo de millones de filas, sin servidor

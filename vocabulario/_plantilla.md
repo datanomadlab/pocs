@@ -4,7 +4,7 @@ titulo: "Nombre, dos puntos y lo que el lector va a poder hacer o entender (máx
 subtitulo: "Una o dos frases con lo que cubre el post. Es el subtítulo en Substack."
 descripcion: "Máximo 160 caracteres. Es el texto que se ve al compartir el enlace."
 resumen: "Una frase de menos de 120 caracteres, sin el nombre del término. Va en el índice."
-categoria: "infraestructura | motor de consulta | formato | base de datos | orquestación | ia"
+categoria: "infraestructura | motor de consulta | formato | base de datos | mensajería | protocolo | procesamiento | orquestación | ia"
 estado: borrador
 generado: AAAA-MM-DD
 probado_con: "versión de la herramienta y sistema donde se corrieron los comandos"

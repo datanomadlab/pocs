@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/zilla.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Zilla"
+pregunta = "Reparte un tópico de Kafka a las pantallas por SSE, solo con un archivo de configuración."
+nota = "La pantalla que vuelve de un corte manda el id del último evento que vio y sigue desde ahí."
+
+conectores = [
+  "M402 450H520",
+  "M880 450H1000",
+  "M700 600V510",
+]
+
+[[caja]]
+titulo = "tópico de kafka"
+detalle = "3 lecturas de medidores"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "zilla"
+detalle = "guarda una copia y la reparte"
+x = 520
+y = 390
+w = 360
+h = 120
+
+[[caja]]
+titulo = "curl hace de pantalla"
+detalle = "3 eventos por SSE, sin código"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "zilla.yaml"
+detalle = "8 bindings, 47 líneas"
+x = 520
+y = 600
+w = 360
+h = 120

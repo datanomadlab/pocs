@@ -5,11 +5,11 @@ subtitulo: "Qué es el almacenamiento de objetos, por qué sirve para analizar d
 descripcion: "Qué es un bucket (S3, Cloud Storage) explicado desde cero, con un ejemplo real que lee un archivo público por partes usando curl."
 resumen: "Carpeta en la nube donde se guardan archivos de cualquier tamaño y se pagan por lo que pesan, sin servidor que mantener."
 categoria: "infraestructura"
-estado: borrador
+estado: publicado
 generado: 2026-11-17
 probado_con: "curl en macOS, contra un archivo público alojado en Amazon S3"
 relacionados: "parquet, iceberg, duckdb"
-substack:
+substack: "https://datanomadlab.substack.com/p/que-es-bucket"
 ---
 
 # Bucket: la carpeta en la nube donde viven los datos

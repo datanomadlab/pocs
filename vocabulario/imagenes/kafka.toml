@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/kafka.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Apache Kafka"
+pregunta = "Guarda eventos en orden y deja que varios programas los lean, cada uno a su ritmo."
+nota = "El broker guarda el avance de cada grupo. Si un lector muere sin avisar, espera el tiempo de sesión antes de repartir su parte."
+
+conectores = [
+  "M402 450H520",
+  "M920 450H1040",
+  "M1250 510V600",
+]
+
+[[caja]]
+titulo = "productor"
+detalle = "escribe mensajes con clave"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "tópico lecturas"
+detalle = "3 particiones, cada una en orden"
+x = 520
+y = 390
+w = 400
+h = 120
+
+[[caja]]
+titulo = "grupo pantallas"
+detalle = "cada lector retoma donde quedó"
+x = 1040
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "tiempo de sesión"
+detalle = "la espera si un lector se cae"
+x = 1040
+y = 600
+w = 420
+h = 120

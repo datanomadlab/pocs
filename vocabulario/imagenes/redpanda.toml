@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/redpanda.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Redpanda"
+pregunta = "Un servidor de eventos que entiende a los clientes de Kafka y corre como un solo programa."
+nota = "Misma API que Kafka, otra implementación. Sin fsync confirma antes de escribir al disco y puede perder datos."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+]
+
+[[caja]]
+titulo = "rpk publica"
+detalle = "4 lecturas de temperatura"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "redpanda"
+detalle = "un solo binario, sin Java"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "cliente de Kafka"
+detalle = "lee las mismas 4 lecturas"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "modo de desarrollo"
+detalle = "sin fsync: solo para probar"
+x = 520
+y = 600
+w = 330
+h = 120

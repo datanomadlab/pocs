@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/redis.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Redis"
+pregunta = "Guarda datos en memoria, por clave, con estructuras como listas y streams, y los borra cuando vencen."
+nota = "Los datos viven fuera de tu programa: si tu programa se reinicia, lo que dejó en Redis sigue ahí."
+
+conectores = [
+  "M402 490H520",
+  "M850 490H910V370H968",
+  "M910 490V610H968",
+]
+
+[[caja]]
+titulo = "tu programa"
+detalle = "escribe y lee por clave"
+x = 72
+y = 430
+w = 330
+h = 120
+
+[[caja]]
+titulo = "redis"
+detalle = "otro proceso, todo en memoria"
+x = 520
+y = 430
+w = 330
+h = 120
+
+[[caja]]
+titulo = "clave con vencimiento"
+detalle = "se borra sola a los 10 segundos"
+x = 968
+y = 310
+w = 420
+h = 120
+
+[[caja]]
+titulo = "stream del canal"
+detalle = "entran 4, quedan los últimos 3"
+x = 968
+y = 550
+w = 420
+h = 120
+resultado = true
