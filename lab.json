@@ -1,25 +1,14 @@
 {
   "experimentos": [
     {
-      "numero": "01",
-      "titulo": "Lakehouse de bolsillo",
-      "pregunta": "¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket?",
-      "stack": ["iceberg", "duckdb", "bigquery"],
+      "numero": "02",
+      "titulo": "Stream a pantallas en vivo",
+      "pregunta": "¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo?",
+      "stack": ["centrifugo", "nats", "redpanda"],
       "estado": "en-construccion",
       "en": {
-        "titulo": "Pocket lakehouse",
-        "pregunta": "How much do you save by moving analytics off BigQuery to Iceberg and DuckDB on a bucket?"
-      }
-    },
-    {
-      "numero": "02",
-      "titulo": "Agente de datos con MCP",
-      "pregunta": "¿Puede un agente responder preguntas de negocio sobre un warehouse sin inventar cifras?",
-      "stack": ["mcp", "duckdb", "llm"],
-      "estado": "proxima",
-      "en": {
-        "titulo": "A data agent with MCP",
-        "pregunta": "Can an agent answer business questions over a warehouse without making up numbers?"
+        "titulo": "Stream to live screens",
+        "pregunta": "Ready-made tools or your own consumer to take 10,000 events per second to live screens?"
       }
     },
     {
@@ -31,6 +20,17 @@
       "en": {
         "titulo": "A USD 5 a month pipeline",
         "pregunta": "What is the smallest serious ELT for a small company, without paid tools?"
+      }
+    },
+    {
+      "numero": "04",
+      "titulo": "Agente de datos con MCP",
+      "pregunta": "¿Puede un agente responder preguntas de negocio sobre un warehouse sin inventar cifras?",
+      "stack": ["mcp", "duckdb", "llm"],
+      "estado": "proxima",
+      "en": {
+        "titulo": "A data agent with MCP",
+        "pregunta": "Can an agent answer business questions over a warehouse without making up numbers?"
       }
     },
     {
