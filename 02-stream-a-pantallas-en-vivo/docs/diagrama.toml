@@ -1,4 +1,4 @@
-# Diagrama del experimento. Se dibuja desde la raíz con: make diagrama EXP=04-stream-a-pantallas-en-vivo
+# Diagrama del experimento. Se dibuja desde la raíz con: make diagrama EXP=02-stream-a-pantallas-en-vivo
 # Lienzo de 1600x900. Solo conectores horizontales y verticales. La caja "veredicto" va en ámbar.
 numero = "04"
 titulo = "Stream a pantallas en vivo"

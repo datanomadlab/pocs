@@ -3,7 +3,7 @@
 > Archivo generado por `make demo`. No lo edites a mano: vuelve a correr la demo.
 
 - **Máquina:** Darwin 25.6.0, Apple M4 Pro, 14 núcleos. Docker 29.9.3 con 12 núcleos y 7,7 GB.
-- **Fecha de la medición:** 2026-11-21. NATS + Centrifugo/Redis se volvió a medir el 25 de noviembre de 2026.
+- **Fecha de la medición:** 2026-11-21. NATS + Centrifugo/Redis se volvió a medir el 26 de noviembre de 2026.
 - **Carga:** 10.000/s (menos en las rutas simuladas: ver su tabla), 100.000 emisores en 1.000 cuentas, 100 pantallas, eventos de 300 bytes.
 - **Versiones:** Redpanda 26.3.1, NATS 2.15.3, kinesis-mock 0.6.2, ElasticMQ 1.7.1, Centrifugo 6.10.3, Redis 8-alpine, Zilla 2.7.1, EMQX 6.3.3.
 - **Etiquetas:** medido (corrió en esta máquina), simulado (contra un emulador: comprueba que funciona, no cuánto tarda ni cuánto cobra) y modelo (proyección con los supuestos de `escenario.toml`).
@@ -23,9 +23,9 @@
 | NATS + Go | 3,7 ms | >= 80.000/s | 0,31 + 0,26 | 138 líneas |
 | NATS + Node | 3,3 ms | 40.000/s | 0,31 + 0,25 | 85 líneas |
 | NATS + Centrifugo | 3,9 ms | >= 80.000/s | 0,25 + 0,22 | 29 de config. |
-| NATS + Centrifugo/Redis | 9,4 ms | 10.000/s | 0,45 + 0,75 | 44 de config. |
+| NATS + Centrifugo/Redis | 10 ms | 10.000/s | 0,46 + 0,74 | 44 de config. |
 
-Medido el 21 de noviembre de 2026 en Apple M4 Pro, con Docker, cada pieza limitada a 2 núcleos y 2 GB. NATS + Centrifugo/Redis se volvió a medir el 25 de noviembre de 2026. 100.000 emisores, 100 pantallas, eventos de 300 bytes. Aguanta: la mayor tasa con p99 bajo 1,0 s y sin pérdida; la rampa llega hasta 80.000/s. Núcleos: los que usó el transporte más los que usó la entrega; en la ruta con Redis no cuentan los de Redis, que corre aparte con 1 núcleo. Código propio: líneas que el equipo escribe y mantiene; en Centrifugo, Zilla y EMQX son líneas de configuración. «6 s» es el tiempo de sesión del grupo de Kafka; de fábrica son 45 s en Go y 30 s en Node. En Redpanda + Zilla el productor escribe a Kafka sin comprimir.
+Medido el 21 de noviembre de 2026 en Apple M4 Pro, con Docker, cada pieza limitada a 2 núcleos y 2 GB. NATS + Centrifugo/Redis se volvió a medir el 26 de noviembre de 2026. 100.000 emisores, 100 pantallas, eventos de 300 bytes. Aguanta: la mayor tasa con p99 bajo 1,0 s y sin pérdida; la rampa llega hasta 80.000/s. Núcleos: los que usó el transporte más los que usó la entrega; en la ruta con Redis no cuentan los de Redis, que corre aparte con 1 núcleo. Código propio: líneas que el equipo escribe y mantiene; en Centrifugo, Zilla y EMQX son líneas de configuración. «6 s» es el tiempo de sesión del grupo de Kafka; de fábrica son 45 s en Go y 30 s en Node. En Redpanda + Zilla el productor escribe a Kafka sin comprimir.
 
 ## Al matar la pieza que entrega a las pantallas
 
@@ -40,7 +40,7 @@ Medido el 21 de noviembre de 2026 en Apple M4 Pro, con Docker, cada pieza limita
 | NATS + Go | < 0,4 s | 30 s | 2.121 | 0 | 100 |
 | NATS + Node | 0,3 s | 30 s | 3.159 | 1 | 98 |
 | NATS + Centrifugo | < 0,4 s | 30 s | 4.016 | 1 | 96 |
-| NATS + Centrifugo/Redis | < 0,4 s | 30 s | 0 | 1 | 73 |
+| NATS + Centrifugo/Redis | 30 s | 30 s | 208 | 1 | 47 |
 
 La pieza se mata sin aviso a los 10 s de carga y se levanta de inmediato. Se repite 2 veces por ruta y cada columna muestra su peor valor. Congelada: tiempo sin que llegue nada a la pantalla. Atraso máx.: lo que tardó en llegar el evento más demorado. Sin orden: eventos que llegaron después de uno posterior del mismo emisor; como cada emisor emite cada 10 s, solo se ve un desorden mayor que eso. Las pantallas se reconectan a los 100 ms. No llegaron: eventos que ninguna pantalla recibió hasta 20 s después de terminar la carga.
 
