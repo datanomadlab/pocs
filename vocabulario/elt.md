@@ -247,6 +247,7 @@ Cada uno parte de la carpeta del paso 6. Si pruebas varios, borra `crudo/carga_3
 - [Postgres](postgres.md): el origen más común.
 - [DuckDB](duckdb.md): el motor de la T.
 - [Parquet](parquet.md): el formato de la capa cruda.
+- [Cloud Run](cloud-run.md): dónde corre cada día la carga del experimento 03, como job.
 
 ---
 
