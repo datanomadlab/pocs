@@ -110,6 +110,7 @@ Para datos que una aplicación lee y escribe muchas veces por segundo, un bucket
 - [Parquet](parquet.md): el formato de archivo que aprovecha la lectura por rango.
 - [Apache Iceberg](iceberg.md): cómo se ordenan muchos archivos de un bucket en una tabla.
 - [DuckDB](duckdb.md): un motor que consulta archivos directamente en un bucket.
+- [Cloud Run](cloud-run.md): el job que escribiría sus archivos en un bucket en el experimento 03.
 
 ---
 

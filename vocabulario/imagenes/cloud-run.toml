@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/cloud-run.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "Cloud Run"
+pregunta = "Corre tu contenedor en Google Cloud cuando hace falta y lo apaga al terminar."
+nota = "En el ejemplo el contenedor corrió 0,15 s de punta a punta con los límites de un job. Cloud Run cobraría un minuto igual: es el mínimo."
+
+conectores = [
+  "M372 450H457",
+  "M757 450H842",
+  "M1142 450H1227",
+]
+
+[[caja]]
+titulo = "cloud scheduler"
+detalle = "lo dispara una vez al día"
+x = 72
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "job"
+detalle = "1 vCPU y 512 MB"
+x = 457
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "tu contenedor"
+detalle = "corre 0,15 s y se apaga"
+x = 842
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "la cuenta"
+detalle = "un minuto: el mínimo"
+x = 1227
+y = 390
+w = 300
+h = 120
+resultado = true
