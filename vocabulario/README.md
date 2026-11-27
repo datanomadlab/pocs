@@ -14,6 +14,7 @@ Los redacta una IA siguiendo una plantilla fija, y cada post lo dice al final. L
 | [Centrifugo](centrifugo.md) | Servidor que mantiene las conexiones con las pantallas y les reparte al instante los mensajes de cada canal. | mensajería | borrador |
 | [Docker](https://datanomadlab.substack.com/p/docker-como-probar-una-base-de-datos) | Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina. | infraestructura | publicado |
 | [DuckDB](https://datanomadlab.substack.com/p/que-es-duckdb) | Motor SQL para análisis que corre dentro de tu programa y lee archivos directamente, sin servidor. | motor de consulta | publicado |
+| [ELT](elt.md) | Copiar los datos tal como están en el origen y transformarlos después, con SQL, donde llegaron. | procesamiento | borrador |
 | [EMQX](emqx.md) | Servidor que recibe mensajes MQTT y los reparte a quien se suscribió, con reglas para filtrarlos y reenviarlos. | mensajería | borrador |
 | [Apache Flink](flink.md) | Calcula sobre eventos que no dejan de llegar y recuerda sus cuentas aunque se caiga una máquina. | procesamiento | borrador |
 | [Apache Iceberg](https://datanomadlab.substack.com/p/que-es-iceberg) | Formato de tabla abierto que convierte un montón de archivos Parquet en una tabla con versiones, particiones y cambios seguros. | formato | publicado |

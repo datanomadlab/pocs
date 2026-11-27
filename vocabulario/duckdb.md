@@ -121,6 +121,7 @@ No queda nada que limpiar: no se creó ningún archivo.
 - [Parquet](parquet.md): el formato de archivo con el que DuckDB mejor se entiende.
 - [Apache Iceberg](iceberg.md): cómo un grupo de archivos Parquet se convierte en una tabla.
 - [BigQuery](bigquery.md): el warehouse con el que se compara en el experimento 01.
+- [ELT](elt.md): cómo llegan los datos a los archivos que DuckDB consulta, y cómo quedarse con la versión más nueva de cada fila.
 
 ---
 

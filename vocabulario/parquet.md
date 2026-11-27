@@ -128,6 +128,7 @@ Para pasarle un archivo chico a alguien que lo va a abrir en Excel, CSV sigue si
 - [DuckDB](duckdb.md): el motor que se usó aquí para leerlo.
 - [Apache Iceberg](iceberg.md): qué hacer cuando un archivo ya no alcanza.
 - [Bucket](bucket.md): dónde viven estos archivos en la nube y por qué se pueden leer por partes.
+- [ELT](elt.md): cómo se llena una carpeta de Parquet cada día, moviendo solo lo nuevo.
 
 ---
 
