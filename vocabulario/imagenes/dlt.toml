@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/dlt.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "dlt"
+pregunta = "Una librería de Python que copia datos de un origen a un destino y recuerda hasta dónde llegó."
+nota = "En el ejemplo, la segunda corrida trajo 21 de 1.020 filas aunque se borró la carpeta local de dlt. Medido el 27 de noviembre de 2026."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M1210 510V600",
+]
+
+[[caja]]
+titulo = "origen"
+detalle = "una lista, una API o una base"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "dlt"
+detalle = "un script de Python"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "solo lo nuevo"
+detalle = "2.ª corrida: 21 de 1.020 filas"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "el avance"
+detalle = "guardado junto a los datos"
+x = 1000
+y = 600
+w = 420
+h = 120
