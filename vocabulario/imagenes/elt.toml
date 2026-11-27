@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/elt.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "ELT"
+pregunta = "Extraer, cargar tal cual y transformar con SQL en el destino, moviendo solo lo nuevo."
+nota = "Al segundo día del ejemplo, la carga incremental movió 21 de 1.020 filas. Medido con DuckDB el 27 de noviembre de 2026."
+
+conectores = [
+  "M372 450H457",
+  "M757 450H842",
+  "M1142 450H1227",
+]
+
+[[caja]]
+titulo = "origen"
+detalle = "la base de ventas"
+x = 72
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "extraer y cargar"
+detalle = "solo lo nuevo: 21 filas"
+x = 457
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "crudo"
+detalle = "parquet, tal como llegó"
+x = 842
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "reporte"
+detalle = "transformado con SQL"
+x = 1227
+y = 390
+w = 300
+h = 120
+resultado = true
