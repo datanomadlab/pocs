@@ -75,8 +75,9 @@ class Corrida:
 
 
 def _argumentos(camino: str, corrida: str, nombre: str, dsn: str, corte: str | None = None) -> list[str]:
-    """El job corre con el límite de Cloud Run. Como allá, el disco del contenedor es memoria:
-    solo se puede escribir en /tmp, que es un tmpfs y cuenta contra los 512 MB. Corre con el usuario
+    """El job corre con el límite de Cloud Run. Allá el disco del contenedor vive en memoria y
+    cuenta contra los 512 MB; aquí se imita más estricto: todo es de solo lectura salvo /tmp, que es
+    un tmpfs. Corre con el usuario
     de quien lanza la demo, para que lo que deje en data/ se pueda borrar sin permisos especiales.
     Con `corte`, el job de dlt se mata a sí mismo en ese punto de la carga (ver corte.py)."""
     config.BUCKET.mkdir(parents=True, exist_ok=True)
