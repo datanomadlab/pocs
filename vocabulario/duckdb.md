@@ -86,6 +86,7 @@ No queda nada que limpiar: no se creó ningún archivo.
 ## Dónde lo vas a ver en el Lab
 
 - [Experimento 01 · Lakehouse de bolsillo](../01-lakehouse-de-bolsillo/): DuckDB consulta 9,5 millones de viajes guardados en una tabla [Apache Iceberg](iceberg.md), que es un grupo de archivos Parquet ordenados como tabla. Las cinco consultas del experimento tardan 0,35 segundos en total, usando solo 4 de los procesadores de la máquina para que se parezca a un servidor chico. Ese experimento lo compara con [BigQuery](bigquery.md).
+- [Experimento 03 · Pipeline de USD 5 al mes](../03-pipeline-de-usd-5-al-mes/): sobre los Parquet que deja [dlt](dlt.md), DuckDB se queda con la versión más nueva de cada fila, corre las pruebas de datos y arma los cinco reportes.
 - [duckdbpoc](../duckdbpoc/) y [ragwith](../ragwith/), entre los experimentos antiguos.
 
 ## Errores típicos cuando partes

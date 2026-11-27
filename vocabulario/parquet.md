@@ -96,6 +96,7 @@ Con medio millón de filas la diferencia son milisegundos. Con miles de millones
 ## Dónde lo vas a ver en el Lab
 
 - [Experimento 01 · Lakehouse de bolsillo](../01-lakehouse-de-bolsillo/): los datos de origen vienen en Parquet y la tabla [Apache Iceberg](iceberg.md) del experimento los guarda en Parquet. Los 9,5 millones de viajes ocupan 164 MB. Sin comprimir serían cerca de 1.378 MB (es una estimación), que es el tamaño por el que cobraría [BigQuery](bigquery.md), un servicio de consultas en la nube.
+- [Experimento 03 · Pipeline de USD 5 al mes](../03-pipeline-de-usd-5-al-mes/): [dlt](dlt.md) deja cada día en Parquet solo lo nuevo de Postgres; al final del mes simulado son 122 archivos crudos que DuckDB lee en cada corrida (medido).
 - [duckdbpoc](../duckdbpoc/), entre los experimentos antiguos, lee un archivo Parquet para armar un tablero.
 
 ## Errores típicos cuando partes
