@@ -26,7 +26,7 @@ BigQuery es la base de datos para análisis (warehouse) de Google Cloud: subes t
 
 ## El problema que resuelve
 
-Una base de datos como Postgres está hecha para la aplicación: guardar un pedido, buscar un cliente, de a un registro y muy rápido. Cuando le pides resumir cientos de millones de filas para un informe, se demora y además frena a la aplicación que depende de ella.
+Una base de datos como [Postgres](postgres.md) está hecha para la aplicación: guardar un pedido, buscar un cliente, de a un registro y muy rápido. Cuando le pides resumir cientos de millones de filas para un informe, se demora y además frena a la aplicación que depende de ella.
 
 Un **warehouse** (bodega de datos) es una base aparte, pensada solo para análisis. Ahí se copian los datos de las aplicaciones y se consultan sin molestar a nadie.
 

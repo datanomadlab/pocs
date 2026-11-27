@@ -26,7 +26,7 @@ Docker empaqueta un programa con todo lo que necesita (sistema, librerías, conf
 
 ## El problema que resuelve
 
-Quieres probar Postgres. Sin Docker, lo instalas en tu sistema, eliges una versión, queda un servicio corriendo de fondo y, cuando ya no lo quieres, te toca desinstalarlo con cuidado. Si mañana otro proyecto necesita otra versión, las dos se pisan.
+Quieres probar [Postgres](postgres.md). Sin Docker, lo instalas en tu sistema, eliges una versión, queda un servicio corriendo de fondo y, cuando ya no lo quieres, te toca desinstalarlo con cuidado. Si mañana otro proyecto necesita otra versión, las dos se pisan.
 
 Después viene el segundo problema: le pasas tu proyecto a alguien y no le funciona. Tiene otra versión, otro sistema operativo, le falta una librería. La frase "en mi máquina sí corre" nace ahí.
 
@@ -126,6 +126,7 @@ Si tu herramienta es un solo ejecutable o una librería de Python, como [DuckDB]
 
 - [DuckDB](duckdb.md): un motor de consultas que no necesita servidor ni contenedor.
 - [Bucket](bucket.md): dónde se guardan los archivos cuando el experimento sale de tu computador.
+- [Postgres](postgres.md): qué es la base de datos que levanta el ejemplo, y cómo cuida sus datos.
 
 ---
 

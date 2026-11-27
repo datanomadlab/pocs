@@ -1,0 +1,45 @@
+# Imagen del post de vocabulario. Se dibuja con: tools/diagrama.py vocabulario/imagenes/postgres.toml
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. El ámbar marca el resultado.
+etiqueta = "Vocabulario"
+titulo = "PostgreSQL"
+pregunta = "Una base de datos con servidor donde una aplicación guarda sus registros en tablas."
+nota = "Cada fila cumple las reglas de su tabla, y cada grupo de cambios entra completo o no entra."
+
+conectores = [
+  "M402 450H520",
+  "M850 450H1000",
+  "M685 510V600",
+]
+
+[[caja]]
+titulo = "ventas del día"
+detalle = "filas nuevas y cambiadas"
+x = 72
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "postgres"
+detalle = "un servidor que guarda tablas"
+x = 520
+y = 390
+w = 330
+h = 120
+
+[[caja]]
+titulo = "tablas al día"
+detalle = "1 fila nueva y 1 actualizada"
+x = 1000
+y = 390
+w = 420
+h = 120
+resultado = true
+
+[[caja]]
+titulo = "reglas"
+detalle = "sin duplicados ni negativos"
+x = 520
+y = 600
+w = 330
+h = 120
