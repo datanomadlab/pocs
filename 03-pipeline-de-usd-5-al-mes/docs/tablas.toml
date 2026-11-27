@@ -1,0 +1,30 @@
+# Generado por make demo. No lo edites a mano.
+
+[[tabla]]
+id = "pruebas"
+titulo = "Las siete pruebas de un ELT serio"
+columnas = ["Prueba", "dlt + DuckDB", "Script a mano"]
+etiquetas = ["", "medido", "medido"]
+filas = [
+  ["Carga incremental", "pasa", "no pasa"],
+  ["Repetir no duplica", "pasa", "pasa"],
+  ["Corte a medio camino", "pasa", "pasa"],
+  ["Columna nueva en el origen", "no pasa", "pasa"],
+  ["Dato malo", "pasa con código propio", "no pasa"],
+  ["Borrado en el origen", "no pasa", "pasa"],
+  ["Rastro de cada corrida", "pasa con código propio", "no pasa"],
+]
+total = ["Pasan", "3 de 7 y 2 con código propio", "4 de 7"]
+nota = "Medido el 27 de noviembre de 2026, con cada job limitado a 1 vCPU y 512 MB. 30 días con ventas y las pruebas sobre el mismo origen Postgres."
+
+[[tabla]]
+id = "costos"
+titulo = "Costo mensual, sin capa gratuita / con capa gratuita"
+columnas = ["Escenario", "dlt + DuckDB", "Fivetran + BigQuery", "Airbyte + BigQuery"]
+etiquetas = ["", "modelo", "modelo", "modelo"]
+filas = [
+  ["La tienda del dataset", "USD 0,16 / USD 0", "USD 36 / USD 0", "USD 20 / USD 20"],
+  ["10 veces más ventas", "USD 0,16 / USD 0", "USD 318 / USD 318", "USD 20 / USD 20"],
+  ["100 veces más ventas", "USD 0,20 / USD 0", "USD 1.149 / USD 1.145", "USD 24 / USD 20"],
+]
+nota = "Modelo con precios de lista en us-central1 y una corrida al día. La primera fila de dlt + DuckDB es estimada con los segundos medidos (2,3 s por corrida). Airbyte no tiene plan gratuito. Supuestos en escenario.toml."

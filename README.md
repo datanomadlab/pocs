@@ -8,6 +8,7 @@ Cada carpeta numerada es un experimento: una herramienta de datos o IA puesta a 
 |---|---|---|---|---|
 | 01 | [Lakehouse de bolsillo](01-lakehouse-de-bolsillo/) | ¿Cuánto se ahorra si saco la analítica de BigQuery y la llevo a Iceberg y DuckDB sobre un bucket? | Publicado | Depende |
 | 02 | [Stream a pantallas en vivo](02-stream-a-pantallas-en-vivo/) | ¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo? | En construcción | Depende |
+| 03 | [Pipeline de USD 5 al mes](03-pipeline-de-usd-5-al-mes/) | ¿Se puede operar un ELT serio para una pyme por menos de USD 5 al mes, sin herramientas de pago? | En construcción | No todavía |
 
 Los veredictos posibles son tres: **Lo usaría**, **Depende** y **No todavía**.
 

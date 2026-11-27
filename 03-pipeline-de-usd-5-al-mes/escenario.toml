@@ -1,0 +1,93 @@
+# Precios y supuestos del modelo de costos. Todo en USD, precios de lista, región us-central1.
+# Revisados el 26 de noviembre de 2026. Las páginas de precios de Google Cloud y la tabla de Fivetran
+# se leyeron como texto, no en un navegador: míralas antes de publicar y actualiza "revisado".
+# Cada SUPUESTO es algo que no se midió ni está publicado. El más fuerte está en [modelo].
+
+[cloud_run]
+# Cloud Run jobs, cobro por instancia (Tier 1). Fuente: https://cloud.google.com/run/pricing
+# Mínimos de un job: https://docs.cloud.google.com/run/docs/configuring/jobs/cpu y .../jobs/memory-limits
+revisado = "2026-11-26"
+usd_por_vcpu_s = 0.000018
+usd_por_gib_s = 0.000002
+vcpu_s_gratis_mes = 240_000   # por cuenta de facturación, sumando todos sus proyectos
+gib_s_gratis_mes = 450_000
+minimo_s = 60                 # cada instancia se cobra al menos un minuto
+redondeo_s = 0.1              # y se redondea hacia arriba a 100 ms
+vcpu = 1                      # lo mínimo que acepta un job; es el límite con que se mide
+memoria_gib = 0.5             # 512 MiB, también el mínimo
+arranque_s = 10               # SUPUESTO, no medido: lo que tarda Cloud Run en bajar la imagen y partir
+
+[scheduler]
+# Cloud Scheduler: el job que dispara la corrida diaria. Fuente: https://cloud.google.com/scheduler/pricing
+revisado = "2026-11-26"
+usd_por_job_mes = 0.10
+jobs_gratis = 3               # por cuenta de facturación
+
+[bucket]
+# Cloud Storage Standard. Fuente: https://cloud.google.com/storage/pricing
+# Capa gratuita: https://docs.cloud.google.com/free/docs/free-cloud-features (solo us-west1, us-central1, us-east1)
+revisado = "2026-11-26"
+usd_por_gib_mes = 0.020
+usd_por_1000_clase_a = 0.005  # escrituras y listados
+usd_por_1000_clase_b = 0.0004 # lecturas
+gb_gratis_mes = 5
+clase_a_gratis_mes = 5_000
+clase_b_gratis_mes = 50_000
+listados_por_corrida = 20     # SUPUESTO: cuántas veces dlt y DuckDB listan carpetas en una corrida
+
+[registro]
+# Artifact Registry, donde vive la imagen del job. Fuente: https://cloud.google.com/artifact-registry/pricing
+revisado = "2026-11-26"
+usd_por_gib_mes = 0.10
+gb_gratis_mes = 0.5
+
+[fivetran]
+# Plan Standard: filas activas al mes (MAR) por conexión; la carga inicial no se cobra.
+# Tarifas: https://www.fivetran.com/legal/service-consumption-table (V.11, desde el 1 de noviembre de 2026)
+# Plan gratuito: https://www.fivetran.com/pricing/free-plan
+revisado = "2026-11-26"
+mar_gratis_mes = 500_000
+# [desde cuántas MAR, cargo base, USD por millón de MAR sobre "desde"]
+tramos = [[0, 5, 495], [1_000_000, 500, 170], [4_000_000, 1_010, 58]]
+
+[airbyte]
+# Airbyte Cloud, plan Standard. No tiene plan gratuito.
+# Fuentes: https://airbyte.com/pricing y https://docs.airbyte.com/platform/cloud/managing-airbyte-cloud/manage-credits
+revisado = "2026-11-26"
+usd_mes_minimo = 20           # incluye 5 créditos
+creditos_incluidos = 5
+usd_por_credito = 4           # NO PUBLICADO: 20 USD dividido por los 5 créditos incluidos
+creditos_por_gb = 4           # fuentes de bases de datos y archivos
+factor_volumen = 2            # SUPUESTO: cobra el volumen serializado en su protocolo, mayor que en Postgres
+
+[bigquery]
+# Destino de la herramienta administrada, por demanda. Fuente: https://cloud.google.com/bigquery/pricing
+# La región de la tabla de precios quedó sin confirmar (us-central1 o la multirregión US).
+revisado = "2026-11-26"
+usd_por_tib = 6.25
+tib_gratis_mes = 1
+usd_por_gib_mes = 0.023       # almacenamiento lógico activo
+gib_gratis_mes = 10
+# SUPUESTO: el almacenamiento lógico pesa lo que las tablas en Postgres, y cada reporte lee las cuatro
+# tablas completas una vez al día. Sobrestima: BigQuery solo cobra las columnas que lee la consulta.
+
+[modelo]
+# SUPUESTO MÁS FUERTE: el tiempo de cargar y de publicar crece en proporción a los datos, incluida la parte
+# que no depende de ellos (por eso sobrestima), y la corrida sigue cabiendo en 1 vCPU y 512 MB.
+corridas_mes = 30
+umbral_usd_mes = 5            # el de la pregunta
+
+[[escenario]]
+nombre = "La tienda del dataset"
+detalle = "los datos medidos, una corrida al día"
+factor_datos = 1
+
+[[escenario]]
+nombre = "10 veces más ventas"
+detalle = "una tienda con 10 veces más facturas"
+factor_datos = 10
+
+[[escenario]]
+nombre = "100 veces más ventas"
+detalle = "una tienda con 100 veces más facturas"
+factor_datos = 100

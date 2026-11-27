@@ -1,0 +1,64 @@
+# Diagrama del experimento. Se dibuja desde la raíz con: make diagrama EXP=03-pipeline-de-usd-5-al-mes
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. La caja "veredicto" va en ámbar.
+numero = "03"
+titulo = "Pipeline de USD 5 al mes"
+pregunta = "¿Se puede operar un ELT serio para una pyme por menos de USD 5 al mes, sin herramientas de pago?"
+nota = "A los dos caminos se les hacen las mismas 7 pruebas, medidas en local con 1 vCPU y 512 MB. El costo en Cloud Run es una estimación."
+
+conectores = [
+  "M310 450H350V320H390",
+  "M350 450V580H390",
+  "M680 320H760",
+  "M1050 320H1130",
+  "M680 580H1090V320",
+  "M1255 380V520",
+]
+
+[[caja]]
+titulo = "postgres"
+detalle = "sistema de ventas"
+x = 60
+y = 390
+w = 250
+h = 120
+
+[[caja]]
+titulo = "dlt"
+detalle = "carga solo lo nuevo"
+x = 390
+y = 260
+w = 290
+h = 120
+
+[[caja]]
+titulo = "script a mano"
+detalle = "recarga completa, línea base"
+x = 390
+y = 520
+w = 290
+h = 120
+
+[[caja]]
+titulo = "parquet + duckdb"
+detalle = "sql y pruebas de datos"
+x = 760
+y = 260
+w = 290
+h = 120
+
+[[caja]]
+titulo = "7 pruebas"
+detalle = "y segundos por corrida"
+x = 1130
+y = 260
+w = 250
+h = 120
+
+[[caja]]
+titulo = "veredicto"
+detalle = "pruebas, costo y horas"
+x = 1130
+y = 520
+w = 250
+h = 120
+veredicto = true

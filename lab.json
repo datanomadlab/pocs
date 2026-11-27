@@ -15,13 +15,13 @@
     {
       "numero": "03",
       "titulo": "Pipeline de USD 5 al mes",
-      "pregunta": "¿Cuál es el ELT mínimo y serio para una pyme, sin herramientas de pago?",
+      "pregunta": "¿Se puede operar un ELT serio para una pyme por menos de USD 5 al mes, sin herramientas de pago?",
       "stack": ["dlt", "duckdb", "cloud run"],
-      "estado": "proxima",
+      "estado": "en-construccion",
       "fecha": "2026-12-15",
       "en": {
         "titulo": "A USD 5 a month pipeline",
-        "pregunta": "What is the smallest serious ELT for a small company, without paid tools?"
+        "pregunta": "Can a small company run a serious ELT for under USD 5 a month, without paid tools?"
       }
     },
     {
