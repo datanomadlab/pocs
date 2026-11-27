@@ -200,4 +200,4 @@ Qué significa cada etiqueta:
 
 ## Vocabulario
 
-Términos de este experimento explicados desde cero en [vocabulario/](../vocabulario/). La lista está en [vocabulario.txt](vocabulario.txt).
+Términos de este experimento explicados desde cero en [vocabulario/](../vocabulario/): [ELT](../vocabulario/elt.md), [Postgres](../vocabulario/postgres.md), [Docker](../vocabulario/docker.md), [dlt](../vocabulario/dlt.md), [Parquet](../vocabulario/parquet.md), [DuckDB](../vocabulario/duckdb.md), [bucket](../vocabulario/bucket.md), [Cloud Run](../vocabulario/cloud-run.md) y [BigQuery](../vocabulario/bigquery.md). La lista está en [vocabulario.txt](vocabulario.txt).
