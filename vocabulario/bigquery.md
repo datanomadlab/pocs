@@ -121,6 +121,7 @@ Para la base de datos de una aplicación, que necesita leer y escribir registros
 - [DuckDB](duckdb.md): la alternativa de una sola máquina.
 - [Parquet](parquet.md): el formato de archivo que usan casi todas las alternativas.
 - [Apache Iceberg](iceberg.md): cómo esos archivos se organizan en tablas.
+- [Cloud Run](cloud-run.md): otro servicio serverless de Google Cloud, que corre contenedores en vez de SQL.
 
 ---
 

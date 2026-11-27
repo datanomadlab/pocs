@@ -126,6 +126,7 @@ Si tu herramienta es un solo ejecutable o una librería de Python, como [DuckDB]
 
 - [DuckDB](duckdb.md): un motor de consultas que no necesita servidor ni contenedor.
 - [Bucket](bucket.md): dónde se guardan los archivos cuando el experimento sale de tu computador.
+- [Cloud Run](cloud-run.md): cómo correr un contenedor en la nube solo el rato que trabaja.
 
 ---
 

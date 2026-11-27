@@ -12,6 +12,7 @@ Los redacta una IA siguiendo una plantilla fija, y cada post lo dice al final. L
 | [BigQuery](https://datanomadlab.substack.com/p/que-es-bigquery) | Warehouse de Google Cloud sin servidores que administrar, donde consultas con SQL y pagas por los datos que lee cada consulta. | base de datos | publicado |
 | [Bucket](https://datanomadlab.substack.com/p/que-es-bucket) | Carpeta en la nube donde se guardan archivos de cualquier tamaño y se pagan por lo que pesan, sin servidor que mantener. | infraestructura | publicado |
 | [Centrifugo](centrifugo.md) | Servidor que mantiene las conexiones con las pantallas y les reparte al instante los mensajes de cada canal. | mensajería | borrador |
+| [Cloud Run](cloud-run.md) | Servicio de Google Cloud que corre tu contenedor sin servidores que administrar y cobra mientras está prendido. | infraestructura | borrador |
 | [Docker](https://datanomadlab.substack.com/p/docker-como-probar-una-base-de-datos) | Empaqueta un programa con todo lo que necesita para correr igual en cualquier máquina. | infraestructura | publicado |
 | [DuckDB](https://datanomadlab.substack.com/p/que-es-duckdb) | Motor SQL para análisis que corre dentro de tu programa y lee archivos directamente, sin servidor. | motor de consulta | publicado |
 | [EMQX](emqx.md) | Servidor que recibe mensajes MQTT y los reparte a quien se suscribió, con reglas para filtrarlos y reenviarlos. | mensajería | borrador |
