@@ -48,3 +48,31 @@ def test_dolares_en_formato_espanol():
 
 def test_fecha_en_palabras():
     assert reporte.fecha_larga("2026-11-19") == "19 de noviembre de 2026"
+
+
+def _resumen(sim=SIM):
+    return reporte.resumen(LOCAL, config.cargar_escenario(), sim).splitlines()
+
+
+def test_resumen_usa_las_mismas_cifras_que_las_imagenes():
+    t = _tablas()
+    texto = "\n".join(_resumen())
+    assert t["consultas"]["total"][1] in texto and t["consultas"]["total"][2] in texto
+    for fila in t["escenarios"]["filas"]:
+        assert any(fila[0] in linea and fila[1] in linea and fila[2] in linea for linea in _resumen())
+
+
+def test_resumen_marca_cada_cifra_con_su_etiqueta():
+    lineas = _resumen()
+    assert any("0,29 s" in linea and linea.endswith("medido") for linea in lineas)
+    assert any("200 MB" in linea and linea.endswith("estimado") for linea in lineas)
+    assert any("2 de 2 iguales" in linea and linea.endswith("simulado") for linea in lineas)
+    assert any("Costo mensual" in linea and "modelo" in linea for linea in lineas)
+
+
+def test_resumen_sin_simulacion_no_inventa_esa_linea():
+    assert not any("simulado" in linea for linea in _resumen(sim=None))
+
+
+def test_resumen_cabe_en_una_terminal_angosta():
+    assert max(len(linea) for linea in _resumen()) <= reporte.ANCHO_RESUMEN

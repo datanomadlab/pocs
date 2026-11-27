@@ -1,0 +1,18 @@
+# Guion de docs/demo.gif. Se graba con tools/demo.py: cada comando corre de verdad y el GIF
+# muestra su salida tal cual; solo se acortan las esperas largas.
+
+titulo = "experimento 01 · lakehouse de bolsillo"
+
+# Corre antes de grabar y no sale en el GIF: así la demo parte sin datos y muestra la descarga.
+preparar = ["make destroy"]
+
+# Líneas que se muestran en gris: el eco de make.
+tenue = ['^uv (run|sync)\b']
+
+[[paso]]
+comando = "make demo"
+pausa = 7   # segundos para leer el resumen
+
+[[paso]]
+comando = "make destroy"
+pausa = 2

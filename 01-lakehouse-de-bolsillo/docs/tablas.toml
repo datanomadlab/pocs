@@ -6,13 +6,13 @@ titulo = "Las mismas 5 consultas en los dos caminos"
 columnas = ["Consulta", "DuckDB sobre Iceberg", "BigQuery leería", "SQL de BigQuery"]
 etiquetas = ["", "medido", "estimado", "simulado"]
 filas = [
-  ["Viajes e ingresos por mes", "89 ms", "153 MB", "igual"],
-  ["Propina promedio según medio de pago", "47 ms", "229 MB", "igual"],
+  ["Viajes e ingresos por mes", "73 ms", "153 MB", "igual"],
+  ["Propina promedio según medio de pago", "42 ms", "229 MB", "igual"],
   ["Las 10 zonas de origen con más ingresos", "22 ms", "153 MB", "igual"],
-  ["Viajes por hora en un solo mes", "27 ms", "47 MB", "igual"],
-  ["Duración p50 y p95 por día de la semana", "186 ms", "153 MB", "igual (±0,3 %)"],
+  ["Viajes por hora en un solo mes", "24 ms", "47 MB", "igual"],
+  ["Duración p50 y p95 por día de la semana", "173 ms", "153 MB", "igual (±0,3 %)"],
 ]
-total = ["Total", "0,37 s", "735 MB", "5 de 5 iguales"]
+total = ["Total", "0,33 s", "735 MB", "5 de 5 iguales"]
 nota = "DuckDB medido el 19 de noviembre de 2026 en Apple M4 Pro con disco local, 4 hilos y 8 GB. BigQuery estimado con sus reglas de cobro por demanda. SQL de BigQuery traducido y corrido sobre la misma tabla, sin cuenta de GCP."
 
 [[tabla]]
@@ -22,7 +22,7 @@ columnas = ["Escenario", "BigQuery", "Lakehouse"]
 etiquetas = ["", "modelo", "modelo"]
 filas = [
   ["Los datos medidos, refresco cada hora", "USD 0", "USD 0,003"],
-  ["100 veces más datos, refresco cada 15 min", "USD 1.200", "USD 11"],
-  ["1.000 veces más datos, refresco cada 15 min", "USD 12.058", "USD 125"],
+  ["100 veces más datos, refresco cada 15 min", "USD 1.200", "USD 10"],
+  ["1.000 veces más datos, refresco cada 15 min", "USD 12.058", "USD 113"],
 ]
 nota = "Modelo, no una factura. Una ejecución son las 5 consultas una vez. Precios por demanda con capa gratuita; supuestos en escenario.toml."

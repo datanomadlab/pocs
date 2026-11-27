@@ -67,7 +67,7 @@ def crear_y_cargar(rutas: dict[str, Path], cat: Catalog | None = None) -> Table:
     for mes, ruta in rutas.items():
         datos = normalizar(pq.read_table(ruta, columns=list(config.COLUMNAS)), mes)
         tabla.append(datos)
-        print(f"  {mes}: {datos.num_rows:,} viajes")
+        print(f"  {mes}: {datos.num_rows:,} viajes".replace(",", "."))
     return tabla
 
 

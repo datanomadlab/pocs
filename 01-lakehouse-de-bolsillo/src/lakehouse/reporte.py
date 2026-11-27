@@ -136,6 +136,38 @@ def tablas(local: dict, esc: dict, sim: dict | None) -> str:
     return "\n".join(out)
 
 
+ANCHO_RESUMEN = 68
+
+
+def resumen(local: dict, esc: dict, sim: dict | None) -> str:
+    """Lo que `make demo` muestra en la terminal: las cifras de las imágenes del post, con su etiqueta.
+
+    Sale de tablas() para que la terminal, las imágenes y el reporte digan lo mismo.
+    """
+    import tomllib
+
+    t = {x["id"]: x for x in tomllib.loads(tablas(local, esc, sim))["tabla"]}
+    total, etiquetas = t["consultas"]["total"], t["consultas"]["etiquetas"]
+
+    def linea(nombre: str, valor: str, etiqueta: str) -> str:
+        return f"  {nombre:<22}{valor:<{ANCHO_RESUMEN - 24 - len(etiqueta)}}{etiqueta}"
+
+    n = len(local["consultas"])
+    out = [f"Resumen: {es(format(local['filas'], ','))} viajes, {n} consultas por ejecución", "",
+           linea("DuckDB sobre Iceberg", f"las {n} en {total[1]}", etiquetas[1]),
+           linea("BigQuery leería", f"{total[2]} por ejecución", etiquetas[2])]
+    if sim:
+        out.append(linea("SQL de BigQuery", total[3], etiquetas[3]))
+    def mb(b: float) -> str:
+        return es(f"{b / 1e6:,.0f}") + " MB"
+
+    out += [linea("Tabla Iceberg", mb(local["bodega_bytes"]), "medido"),
+            linea("BigQuery cobraría", f"{mb(local['bq_bytes_logicos_total'])} lógicos", "estimado"),
+            "", f"  {'Costo mensual, modelo':<44}{'BigQuery':>10}{'Lakehouse':>12}"]
+    out += [f"  {f[0]:<44}{f[1]:>10}{f[2]:>12}" for f in t["escenarios"]["filas"]]
+    return "\n".join(out)
+
+
 def seccion_simulada(sim: dict, local: dict) -> list[str]:
     estimados = {c["nombre"]: c for c in local["consultas"]}
     out = ["",
