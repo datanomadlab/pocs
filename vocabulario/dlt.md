@@ -228,6 +228,7 @@ Aun con la telemetría apagada, dlt crea `~/.dlt/.anonymous_id`, un identificado
 - [Postgres](postgres.md): el origen del experimento 03.
 - [Parquet](parquet.md): el formato de los archivos que escribe.
 - [DuckDB](duckdb.md): con qué se consultan después.
+- [Cloud Run](cloud-run.md): dónde correría la carga cada día, como job.
 
 ---
 
