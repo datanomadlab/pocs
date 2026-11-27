@@ -115,7 +115,7 @@ Con medio millón de filas la diferencia son milisegundos. Con miles de millones
 
 ## Cuándo no usarlo
 
-Para pasarle un archivo chico a alguien que lo va a abrir en Excel, CSV sigue siendo lo práctico. Y para datos que cambian fila a fila todo el tiempo, como un carrito de compras o un saldo, lo que corresponde es una base de datos como Postgres.
+Para pasarle un archivo chico a alguien que lo va a abrir en Excel, CSV sigue siendo lo práctico. Y para datos que cambian fila a fila todo el tiempo, como un carrito de compras o un saldo, lo que corresponde es una base de datos como [Postgres](postgres.md).
 
 ## Para seguir aprendiendo
 

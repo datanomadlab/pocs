@@ -22,6 +22,7 @@ Los redacta una IA siguiendo una plantilla fija, y cada post lo dice al final. L
 | [MQTT](mqtt.md) | Protocolo en que unos programas publican mensajes en un tema y otros los reciben al suscribirse, mediante un broker. | protocolo | borrador |
 | [NATS](nats.md) | Lleva mensajes entre programas y, si se lo pides, los guarda hasta que alguien confirma que los recibió. | mensajería | borrador |
 | [Parquet](https://datanomadlab.substack.com/p/que-es-parquet) | Formato de archivo que guarda las tablas por columnas, comprimidas, para que las consultas lean solo lo que necesitan. | formato | publicado |
+| [PostgreSQL](postgres.md) | Base de datos con servidor donde una aplicación guarda sus registros y muchos escriben a la vez sin perder datos. | base de datos | borrador |
 | [Redis](redis.md) | Servidor que guarda datos en memoria, por clave, con estructuras como listas y streams, y los borra cuando vencen. | base de datos | borrador |
 | [Redpanda](redpanda.md) | Servidor de eventos que entiende a los clientes de Kafka y corre como un solo programa, sin Java. | mensajería | borrador |
 | [Amazon SQS](sqs.md) | Cola de mensajes que opera AWS: un programa deja mensajes y otro los retira, los procesa y los borra. | mensajería | borrador |

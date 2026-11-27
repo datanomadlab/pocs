@@ -36,7 +36,7 @@ DuckDB es un solo ejecutable. Le escribes SQL y le dices dónde está el archivo
 
 ## Cómo lo logra
 
-- **No hay nada corriendo de fondo.** Con Postgres hay que dejar un programa prendido esperando conexiones, que es lo que se llama un servidor. Aquí abres la terminal, o lo importas desde Python, y ya estás consultando.
+- **No hay nada corriendo de fondo.** Con [Postgres](postgres.md) hay que dejar un programa prendido esperando conexiones, que es lo que se llama un servidor. Aquí abres la terminal, o lo importas desde Python, y ya estás consultando.
 - **Lee por columnas.** Si la consulta menciona dos columnas de veinte, lee esas dos. Con archivos [Parquet](parquet.md), que ya vienen ordenados por columna, la diferencia es grande.
 - **Usa todos los núcleos.** Reparte el trabajo entre los procesadores de tu máquina sin que configures nada.
 - **Lee muchos formatos.** CSV, JSON, Parquet y tablas Apache Iceberg, entre otros, locales o remotos.
@@ -121,6 +121,7 @@ No queda nada que limpiar: no se creó ningún archivo.
 - [Parquet](parquet.md): el formato de archivo con el que DuckDB mejor se entiende.
 - [Apache Iceberg](iceberg.md): cómo un grupo de archivos Parquet se convierte en una tabla.
 - [BigQuery](bigquery.md): el warehouse con el que se compara en el experimento 01.
+- [Postgres](postgres.md): la base de datos de aplicaciones con la que DuckDB se compara.
 
 ---
 

@@ -162,7 +162,7 @@ Apagar a Redis mismo quedó sin medir.
 
 ## Lo que suele confundirse
 
-**Redis y Postgres.** Postgres escribe en disco, en tablas, y se consulta con SQL: es el registro oficial. Redis tiene los datos en memoria y los entrega por clave; suele acompañarlo como caché: una copia de lo que cuesta calcular.
+**Redis y [Postgres](postgres.md).** Postgres escribe en disco, en tablas, y se consulta con SQL: es el registro oficial. Redis tiene los datos en memoria y los entrega por clave; suele acompañarlo como caché: una copia de lo que cuesta calcular.
 
 **Un stream de Redis y [Kafka](kafka.md).** En los dos los mensajes se agregan al final. Kafka los escribe en disco y hace de transporte: mueve eventos entre sistemas. El stream vive en memoria, dentro de una clave.
 
