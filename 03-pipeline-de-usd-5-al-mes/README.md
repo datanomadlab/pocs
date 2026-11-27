@@ -144,7 +144,7 @@ Medidos el 27 de noviembre de 2026 en un Mac con M4 Pro, con cada job en un cont
 | Código que hay que mantener | 104 líneas, más 51 de los cinco reportes (medido) | 16 líneas, sin reportes (medido) |
 | Costo mensual en la nube, con los datos medidos | USD 0,16 sin capa gratuita, USD 0 con ella (estimado) | |
 | Lo mismo con 10 y con 100 veces más ventas | USD 0,16 y USD 0,20 (modelo) | |
-| Horas invertidas | por completar | |
+| Horas invertidas | 8, el experimento completo con los dos caminos | |
 
 La referencia administrada, con las mismas filas: Fivetran más BigQuery cuesta USD 0 en el plan gratuito, porque el mes simulado tiene 63.229 filas activas y el límite son 500.000, y USD 36 en el plan pagado. Con 10 veces más ventas ya no cabe en el plan gratuito y sale USD 318. Airbyte Cloud no tiene plan gratuito y parte en USD 20 (todo modelo). Los montos de los dos lados son infraestructura: no incluyen las horas de quien opera ni las alertas.
 
@@ -180,7 +180,6 @@ Qué significa cada etiqueta:
 - [ ] Juntar los archivos del destino cuando pasen de unos cientos, y medir cuánto cambia la corrida.
 - [ ] Mirar en un navegador los precios de Google Cloud y la tabla de consumo de Fivetran: se leyeron como texto.
 - [ ] Escribir los posts de vocabulario de ELT, Postgres, dlt y Cloud Run.
-- [ ] Anotar las horas invertidas.
 
 ## Cuándo sí / cuándo no
 
