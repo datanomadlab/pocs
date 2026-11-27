@@ -1,0 +1,9 @@
+elt
+postgres
+docker
+dlt
+parquet
+duckdb
+bucket
+cloud-run
+bigquery

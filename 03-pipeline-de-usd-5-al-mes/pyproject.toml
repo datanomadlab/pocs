@@ -1,0 +1,22 @@
+[project]
+name = "pipeline-de-usd-5-al-mes"
+version = "0.1.0"
+requires-python = ">=3.12"
+# Versiones vigentes revisadas en PyPI el 26 de noviembre de 2026.
+dependencies = [
+    "dlt[sql_database,parquet]>=1.32.0",
+    "duckdb>=2.0.1",
+    "psycopg2-binary>=2.9.13",
+    "sqlalchemy>=2.1.9",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "--cov=pipeline --cov-report=term-missing"
