@@ -6,6 +6,7 @@
       "pregunta": "¿Herramientas listas o consumidor propio para llevar 10.000 eventos por segundo a pantallas en vivo?",
       "stack": ["centrifugo", "nats", "redpanda"],
       "estado": "en-construccion",
+      "fecha": "2026-12-01",
       "en": {
         "titulo": "Stream to live screens",
         "pregunta": "Ready-made tools or your own consumer to take 10,000 events per second to live screens?"
@@ -17,6 +18,7 @@
       "pregunta": "¿Cuál es el ELT mínimo y serio para una pyme, sin herramientas de pago?",
       "stack": ["dlt", "duckdb", "cloud run"],
       "estado": "proxima",
+      "fecha": "2026-12-15",
       "en": {
         "titulo": "A USD 5 a month pipeline",
         "pregunta": "What is the smallest serious ELT for a small company, without paid tools?"
@@ -27,7 +29,8 @@
       "titulo": "Agente de datos con MCP",
       "pregunta": "¿Puede un agente responder preguntas de negocio sobre un warehouse sin inventar cifras?",
       "stack": ["mcp", "duckdb", "llm"],
-      "estado": "proxima",
+      "estado": "en-construccion",
+      "fecha": "2027-01-01",
       "en": {
         "titulo": "A data agent with MCP",
         "pregunta": "Can an agent answer business questions over a warehouse without making up numbers?"
@@ -39,6 +42,7 @@
       "pregunta": "¿Pueden Spark, Trino y DuckDB usar la misma tabla Iceberg, con permisos y sin depender de un proveedor?",
       "stack": ["polaris", "seatunnel", "iceberg"],
       "estado": "proxima",
+      "fecha": "2027-01-15",
       "etiqueta": "Serie Lakehouse abierto",
       "en": {
         "titulo": "One catalog for everyone",
