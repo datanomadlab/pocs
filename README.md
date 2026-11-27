@@ -39,7 +39,9 @@ NN-nombre-del-experimento/
 └── docs/
     ├── diagrama.toml      definición del diagrama
     ├── arquitectura.svg   diagrama con el estilo de la marca (y su .png)
-    └── resultados.md      lo escribe `make demo`. No se edita a mano
+    ├── demo.toml          guion de la demo animada (y el demo.gif que se graba con él)
+    ├── resultados.md      lo escribe `make demo`. No se edita a mano
+    └── tablas.toml        las tablas del post, también de `make demo` (y sus tabla-<id>.png)
 ```
 
 ```mermaid
@@ -47,7 +49,7 @@ flowchart LR
   P[Pregunta<br/>una frase] --> C[Código<br/>make demo]
   C --> R[docs/resultados.md<br/>medido, estimado o modelo]
   R --> V[Veredicto<br/>en el README]
-  V --> E[Edición en Substack<br/>y video]
+  V --> E[Edición en Substack<br/>con la demo animada]
   C --> T[vocabulario.txt] --> F[Posts de vocabulario]
 ```
 
@@ -61,27 +63,36 @@ flowchart LR
 
 ### Partir un experimento nuevo
 
-1. Crea la carpeta `NN-nombre/` con la estructura de arriba. El [experimento 01](01-lakehouse-de-bolsillo/) sirve de molde.
-2. Escribe la pregunta en el README antes que el código.
-3. Verifica la versión vigente de cada herramienta en su página oficial.
-4. Lista los términos en `vocabulario.txt` y corre `python3 tools/vocabulario.py estado` para ver qué posts de vocabulario faltan. Cómo se escriben está en [vocabulario/README.md](vocabulario/README.md).
-5. Dibuja el diagrama: edita `docs/diagrama.toml` y corre el comando de abajo.
-6. Agrega la fila a la tabla de este README.
-
-### Diagramas
-
-El diagrama de cada experimento se define en `docs/diagrama.toml` (cajas, conectores y textos) y se dibuja con las fuentes y colores de la marca, que viven en el repo del sitio:
-
 ```bash
-uv run --no-project --with fonttools --with brotli --with cairosvg --with pillow \
-  tools/diagrama.py 01-lakehouse-de-bolsillo
+make nuevo NN=02
 ```
 
-Para la imagen de un post de vocabulario, el mismo comando recibe el archivo: `tools/diagrama.py vocabulario/imagenes/docker.toml`.
+Crea `NN-titulo/` desde [_plantilla/](_plantilla/), con el título y la pregunta de `lab.json`; si el número no está ahí, `python3 tools/nuevo.py NN --titulo "..." --pregunta "..."`. Agrega la fila a la tabla de este README y pasa el experimento a `en-construccion` en `lab.json`. La plantilla trae el README con sus secciones, los cuatro comandos del Makefile, un código mínimo que ya corre (`make setup && make demo`), pruebas, el diagrama y el guion de la demo.
 
-Las tablas del post van como imagen, porque Substack no tiene tablas. `make demo` escribe `docs/tablas.toml` y `tools/tabla.py 01-lakehouse-de-bolsillo` (con las mismas opciones de `uv run`) dibuja `docs/tabla-<id>.png`.
+Después, en este orden:
 
-Necesita la librería cairo (`brew install cairo`) y el repo `datanomadlab` clonado al lado de este. Si está en otra ruta, indícala con `DNL_SITIO=/ruta/al/sitio`. El README de cada experimento lleva además un diagrama Mermaid, que GitHub muestra sin generar nada.
+1. **Diseño.** La pregunta, la línea base, la arquitectura mínima, qué se mide y el criterio del veredicto van en el README antes que el código.
+2. **Versiones.** Revisa la vigente de cada herramienta en su página oficial antes de fijarla en `pyproject.toml`.
+3. **Código y medición.** `make demo` descarga, mide, escribe `docs/resultados.md` y `docs/tablas.toml`, y termina con un resumen corto en la terminal (cada cifra con su etiqueta, 68 columnas como máximo, números en formato 1.234,5). Ese resumen es lo que se ve en la demo animada.
+4. **Vocabulario.** Lista los términos en `vocabulario.txt` y corre `make vocabulario` para ver qué posts faltan. Cómo se escriben está en [vocabulario/README.md](vocabulario/README.md).
+5. **Imágenes.** `make imagenes EXP=NN-titulo` graba la demo, dibuja las tablas y el diagrama. Revisa cada imagen antes de usarla.
+6. **Cifras.** Las del README del experimento y las de la edición tienen que ser las de `docs/resultados.md`. Si la grabación volvió a medir y algo cambió, se corrigen los textos; nunca se repite la medición buscando un número más bonito.
+7. **Veredicto** y "Cuándo sí / cuándo no" en el README del experimento.
+
+### Imágenes
+
+Se dibujan con las fuentes y colores de la marca, que viven en el repo del sitio. Necesitan la librería cairo (`brew install cairo`) y el repo `datanomadlab` clonado al lado de este; si está en otra ruta, indícala con `DNL_SITIO=/ruta/al/sitio`.
+
+| Comando | Lee | Escribe |
+|---|---|---|
+| `make diagrama EXP=…` | `docs/diagrama.toml` (cajas, conectores y textos) | `docs/arquitectura.svg` y `.png` |
+| `make tablas EXP=…` | `docs/tablas.toml`, que escribe `make demo` | `docs/tabla-<id>.png`. Substack no tiene tablas, así que el post las lleva como imagen |
+| `make demo-gif EXP=…` | `docs/demo.toml`, el guion | `docs/demo.gif` |
+| `make imagenes EXP=…` | los tres, en orden: demo, tablas, diagrama | |
+
+La demo animada es un GIF de terminal grabado con la salida real de los comandos del guion: nada se escribe a mano. Solo se acortan las esperas largas, y si el GIF acorta más de unos segundos lo dice en pantalla. Como la grabación corre `make demo`, vuelve a medir; por eso `make imagenes` dibuja las tablas después del GIF. Lo que se graba es público: ningún comando del guion debe imprimir rutas del equipo ni nombres de usuario (por eso `make test` no va en el guion, ya que pytest imprime la carpeta).
+
+Para la imagen de un post de vocabulario, el dibujo del diagrama recibe el archivo: `tools/diagrama.py vocabulario/imagenes/docker.toml`, con las opciones de `uv run` del [Makefile](Makefile). El README de cada experimento lleva además un diagrama Mermaid, que GitHub muestra sin generar nada.
 
 ## Archivo
 

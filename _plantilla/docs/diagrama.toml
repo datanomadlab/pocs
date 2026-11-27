@@ -1,0 +1,46 @@
+# Diagrama del experimento. Se dibuja desde la raíz con: make diagrama EXP={{carpeta}}
+# Lienzo de 1600x900. Solo conectores horizontales y verticales. La caja "veredicto" va en ámbar.
+# Este es un esqueleto de tres cajas: cámbialo por la arquitectura mínima del experimento.
+numero = "{{numero}}"
+titulo = "{{titulo}}"
+pregunta = "{{pregunta}}"
+nota = "Por completar: qué se compara y qué queda medido, estimado o modelo."
+
+conectores = [
+  "M372 450H500",
+  "M800 450H928",
+  "M1228 450H1260",
+]
+
+[[caja]]
+titulo = "datos"
+detalle = "dataset público"
+x = 72
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "pieza 1"
+detalle = "qué hace"
+x = 500
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "pieza 2"
+detalle = "qué hace"
+x = 928
+y = 390
+w = 300
+h = 120
+
+[[caja]]
+titulo = "veredicto"
+detalle = "costo, latencia y horas"
+x = 1260
+y = 390
+w = 268
+h = 120
+veredicto = true
