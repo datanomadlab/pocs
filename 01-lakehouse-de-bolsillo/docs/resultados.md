@@ -13,11 +13,11 @@ DuckDB está **medido** en esta máquina, leyendo la tabla Iceberg desde disco l
 
 | Consulta | DuckDB en frío | DuckDB mediana | BigQuery: bytes estimados | BigQuery: USD por corrida |
 |---|---|---|---|---|
-| Viajes e ingresos por mes | 89 ms | 72 ms | 152,9 MB | 0,000869 |
-| Propina promedio según medio de pago | 47 ms | 42 ms | 229,3 MB | 0,001303 |
-| Las 10 zonas de origen con más ingresos | 22 ms | 20 ms | 152,9 MB | 0,000869 |
-| Viajes por hora en un solo mes (poda de particiones) | 27 ms | 25 ms | 47,4 MB | 0,00027 |
-| Duración p50 y p95 por día de la semana | 186 ms | 167 ms | 152,9 MB | 0,000869 |
+| Viajes e ingresos por mes | 73 ms | 69 ms | 152,9 MB | 0,000869 |
+| Propina promedio según medio de pago | 42 ms | 42 ms | 229,3 MB | 0,001303 |
+| Las 10 zonas de origen con más ingresos | 22 ms | 21 ms | 152,9 MB | 0,000869 |
+| Viajes por hora en un solo mes (poda de particiones) | 24 ms | 24 ms | 47,4 MB | 0,00027 |
+| Duración p50 y p95 por día de la semana | 173 ms | 168 ms | 152,9 MB | 0,000869 |
 
 BigQuery todavía no está medido. Corre `make bq` con una cuenta propia de GCP para agregar los bytes facturados y los tiempos reales.
 
@@ -50,8 +50,8 @@ Esto es un **modelo**, no una factura. Una ejecución son las 5 consultas una ve
 | Escenario | BigQuery (USD/mes) | Lakehouse (USD/mes) | Ahorro | BigQuery sin capa gratuita | Lakehouse sin capa gratuita | Ahorro sin capa gratuita |
 |---|---|---|---|---|---|---|
 | **De bolsillo**: los datos medidos, dashboard que se refresca cada hora | 0 | 0,003286 | no hay costo que ahorrar | 3,04 | 0,87 | 71 % |
-| **Equipo chico**: 100 veces más datos, refresco cada 15 minutos | 1.199,99 | 10,82 | 99 % | 1.206,44 | 16,04 | 99 % |
-| **Empresa mediana**: 1.000 veces más datos, refresco cada 15 minutos | 12.057,95 | 125,11 | 99 % | 12.064,40 | 130,33 | 99 % |
+| **Equipo chico**: 100 veces más datos, refresco cada 15 minutos | 1.199,99 | 9,59 | 99 % | 1.206,44 | 14,81 | 99 % |
+| **Empresa mediana**: 1.000 veces más datos, refresco cada 15 minutos | 12.057,95 | 112,81 | 99 % | 12.064,40 | 118,03 | 99 % |
 
 ### Supuestos del modelo
 

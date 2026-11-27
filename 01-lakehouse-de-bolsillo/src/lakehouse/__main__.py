@@ -83,11 +83,11 @@ def escribir_reporte() -> None:
               if config.MEDICION_BQ.exists() else None)
     simulado = (json.loads(config.MEDICION_SIM.read_text(encoding="utf-8"))
                 if config.MEDICION_SIM.exists() else None)
-    texto = reporte.markdown(local, config.cargar_escenario(), medido, simulado)
-    config.RESULTADOS.write_text(texto, encoding="utf-8")
-    config.TABLAS.write_text(reporte.tablas(local, config.cargar_escenario(), simulado), encoding="utf-8")
-    print(texto)
-    print(f"\nGuardado en {config.RESULTADOS.relative_to(config.RAIZ)}")
+    esc = config.cargar_escenario()
+    config.RESULTADOS.write_text(reporte.markdown(local, esc, medido, simulado), encoding="utf-8")
+    config.TABLAS.write_text(reporte.tablas(local, esc, simulado), encoding="utf-8")
+    print("\n" + reporte.resumen(local, esc, simulado))
+    print(f"\nReporte completo y supuestos en {config.RESULTADOS.relative_to(config.RAIZ)}")
 
 
 def bq() -> None:

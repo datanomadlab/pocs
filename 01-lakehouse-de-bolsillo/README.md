@@ -4,6 +4,8 @@
 >
 > **Veredicto:** Depende. Conviene cuando la cuenta de BigQuery ya duele y viene de consultas repetidas sobre tablas grandes; no si los datos caben en la capa gratuita. Sigue sin medirse BigQuery y un bucket de verdad (ver [Qué falta](#qué-falta)).
 
+![Demo: make demo descarga los datos, crea la tabla, mide, simula BigQuery y muestra el resumen; make destroy lo borra todo](docs/demo.gif)
+
 ![Arquitectura del experimento](docs/arquitectura.png)
 
 ## Qué hace
@@ -41,7 +43,7 @@ make test     # pruebas del modelo de costos, la carga y las consultas
 make destroy  # borra data/ (y el dataset de BigQuery si definiste GCP_PROYECTO)
 ```
 
-`make demo` tarda menos de un minuto con buena conexión. Para cambiar los meses: `MESES=2024-01,2024-02 make demo`.
+`make demo` tarda menos de un minuto con buena conexión y termina con un resumen en la terminal: cada cifra con su etiqueta (medido, estimado, simulado o modelo). Para cambiar los meses: `MESES=2024-01,2024-02 make demo`.
 
 ### Medir BigQuery de verdad (opcional)
 
@@ -69,6 +71,7 @@ GCP_PROYECTO=mi-proyecto make destroy  # borra el dataset
 | [consultas.toml](consultas.toml) y [sql/](sql/) | Las cinco consultas, con una versión por motor |
 | [escenario.toml](escenario.toml) | Precios, supuestos y escenarios. Cámbialos por los tuyos |
 | [docs/diagrama.toml](docs/diagrama.toml) | Definición del diagrama (se dibuja con `tools/diagrama.py`) |
+| [docs/demo.toml](docs/demo.toml) | Guion de la demo animada: qué comandos se graban (con `tools/demo.py`) |
 
 ## Resultados
 
@@ -76,12 +79,12 @@ Medidos el 19 de noviembre de 2026 en un Mac con M4 Pro, con DuckDB limitado a 4
 
 | Métrica | Lakehouse (Iceberg + DuckDB) | BigQuery por demanda |
 |---|---|---|
-| Las 5 consultas, una vez | 0,37 s (medido, disco local) | sin medir |
+| Las 5 consultas, una vez | 0,33 s (medido, disco local) | sin medir |
 | El SQL de BigQuery da el mismo resultado | | 5 de 5 (simulado) |
 | Datos leídos por ejecución | solo las columnas y particiones necesarias | 735 MB (estimado) |
 | Almacenamiento que se paga | 164 MB (Parquet comprimido) | 1.378 MB (bytes lógicos, estimado) |
 | Costo mensual, datos medidos y refresco cada hora | USD 0,003 (modelo) | USD 0 (cabe en la capa gratuita) |
-| Costo mensual, 100 veces más datos y refresco cada 15 min | USD 11 (modelo) | USD 1.200 (modelo) |
+| Costo mensual, 100 veces más datos y refresco cada 15 min | USD 10 (modelo) | USD 1.200 (modelo) |
 | Horas invertidas | por completar | |
 
 Qué significa cada etiqueta:
